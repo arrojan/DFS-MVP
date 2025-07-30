@@ -487,23 +487,6 @@
         <h1>DFS Document Generator</h1>
     </div>
 
-    <div class="section welcome-section">
-        <h2>Welcome to the DFS Document Generator</h2>
-        <p>This tool helps you quickly create Design for Safety (DFS) documents by generating a comprehensive risk table based on your device selection and included components.</p>
-
-        <h3>How to Use This Tool:</h3>
-        <ol>
-            <li><strong>Select a Device</strong> - Choose the device type you're creating a DFS document for</li>
-            <li><strong>Choose Device Type</strong> - For tablets, specify if it's a standard or KET device</li>
-            <li><strong>Select Components</strong> - Check all the components included in your device</li>
-            <li><strong>Add Unique Features</strong> - Add any new unique design features requiring safety consideration</li>
-            <li><strong>Generate Document</strong> - Create your DFS document with all relevant risks</li>
-            <li><strong>Copy to Quip</strong> - Copy the generated table and paste it into your Quip document</li>
-        </ol>
-
-        <p><strong>Note:</strong> Some safety risks are automatically included for tablet devices as they are standard requirements.</p>
-    </div>
-
     <!-- Updated progress indicator with fill animation -->
     <div class="progress-container">
         <div class="progress-bar">
@@ -1051,21 +1034,18 @@ function getComponentsForDevice(device, deviceType) {
 
             <h3>Safety Risk Summary Table</h3>
             <table>
-                <thead>
-                    <tr>
-                        <th>Product Section</th>
-                        <th>ID</th>
-                        <th>Risk Topic</th>
-                        <th>Justification</th>
-                        <th>Functional Team</th>
-                        <th>Assignee</th>
-                        <th>Risk Level</th>
-                        <th>Design Milestone</th>
-                        <th>Close-By Milestone</th>
-                        <th>Control Plan/Validation Plan</th>
-                    </tr>
-                </thead>
-                <tbody>`;
+                <tr>
+                    <th>Product Section</th>
+                    <th>ID</th>
+                    <th>Risk Topic</th>
+                    <th>Justification</th>
+                    <th>Functional Team</th>
+                    <th>Assignee</th>
+                    <th>Risk Level</th>
+                    <th>Design Milestone</th>
+                    <th>Close-By Milestone</th>
+                    <th>Control Plan/Validation Plan</th>
+                </tr>`;
 
             // Add mandatory task row
             content += `<tr class="task-row">
@@ -1126,7 +1106,7 @@ function getComponentsForDevice(device, deviceType) {
                 </tr>`;
             }
 
-            content += `</tbody></table>`;
+            content += `</table>`;
 
             // Add PD & Structural Safety Risk Details section
             content += `<h3>PD & Structural Safety Risk Details</h3>`;
@@ -1245,8 +1225,7 @@ function getComponentsForDevice(device, deviceType) {
                 {
                     section: "Environment Compliance",
                     topic: "Device material causes harmful effects to human or environment",
-                    description: "Lab126, Ring, Blink, Key, Sidewalk (RBKS), and Kuiper branded products, including packaging and batteries (where applicable) must meet the general Environmental Compliance (EC) requirements to comply with the respective regional, national or local environmental laws and regulations where they are put on the market.\nFor regulations that are already adopted, detailed compliance requirements and substance limits are described in the Amazon Devices and Services Restricted and Reportable Substance List (Amazon Devices RSL), PN: 05-003018 and Amazon Supplier Declaration of Compliance (SDoC), PN: 05-030181.\n\n* EC requirements to meet restricted substance laws and regulations applicable to most products globally: (For complete list of impacting regulations, please refer to Amazon Devices RSL)\n* EU RoHS (Restriction of Hazardous Substances Directive 2011/65/EU)\n* EU REACH (Registration, Evaluation Authorization and Restriction of Chemicals Regulation No. 1907/2006)\n* EU POPs (Persistent Organic Pollutants Regulation No. 2019/1021)\n* EU PCKG (Packaging and Packaging Waste Directive 94/62/EC; Annex II, Par.1)\n* EU BATT (Batteries and Accumulators and Waste Batteries and Accumulators Regulation (EU) 2023/1542)\n* US TSCA (Toxic Substance Control Act)\n* Prop 65 (California Safe Drinking Water and Toxic Enforcement Act)\n* CEPA (Canadian Environmental Protection Act, 1999)\n* OFR regulations such as NY and WA OFR – HTC link to be only shared Amazon internal: https://amazon.awsapps.com/workdocs-preview/index.html#/folder/9ef8b0e49a47687962d44280357d1286d62d5e3ec337deb91469403c56a1a3e0\n* PFAS regulations such as CA PFAS, EPA TSCA – HTC link to be only shared Amazon internal: https://amazon.awsapps.com/workdocs-preview/index.html#/folder/9ef8b0e49a47687962d44280357d1286d62d5e3ec337deb91469403c56a1a3e0\n* EC DoC required if product is imported into and made available for sale in the following country(ies):\n* India RoHS (E-waste Management and Handling Rules 2016, Chapter V, sub-rule (1) of Rule 16)\n* EC certification requirements only applicable if product is imported into the respective country for sale:\n* UAE RoHS (UAE Cabinet Decision No. 10/2017, Testing and Certification),\n* KSA RoHS (SASO Technical Regulation for Restriction of Hazardous Substances in Electrical and Electronic Equipment)\n* For suppliers with product manufacturing or assembly processes in China:\n* China VOC (Limits for Volatile Organic Compounds) Regulation related to national requirements for VOC content in adhesives, coatings, inks and cleaning agents during manufacturing\n\nSuppliers are responsible for validating and ensuring that material composition and supporting documents for the parts/components/products that they supply to Amazon meet the requirements of applicable EC laws and regulations.",
-                    requirement: "",
+                    requirement: "<p>Amazon, Ring and Blink branded products, including packaging and batteries (where applicable) must meet the general EC requirements to comply with the respective regional, national or local environmental laws and regulations where they are put on the market.</p><p>For regulations that are already adopted, detailed compliance requirements and substance limits are described in the Amazon Devices and Services Restricted and Reportable Substance List (Amazon Devices RSL), PN: 05-003018, and Amazon Supplier Declaration of Compliance (SDoC), PN: 05-030181.</p><p>For upcoming regulations (which are currently in proposed phase, without a clear compliance deadline), requiring restrictions and/or reporting of substances proposed for regulation such as Per- and Poly- Fluoro Alkyl Substances (PFASs), we recommend phasing out materials/products that contain these substances to suitable alternatives as they become available.</p><p>EC requirements to meet restricted substance laws and regulations applicable to most products globally: (For complete list of impacting regulations, please refer to Amazon Devices RSL)</p><ul><li>EU RoHS (Restriction of Hazardous Substances Directive 2011/65/EU)</li><li>EU REACH (Registration, Evaluation Authorization and Restriction of Chemicals Regulation No. 1907/2006)</li><li>EU POPs (Persistent Organic Pollutants Regulation No. 2019/1021)</li><li>EU PCKG (Packaging and Packaging Waste Directive 94/62/EC; Annex II, Par.1)</li><li>EU BATT (Batteries and Accumulators and Waste Batteries and Accumulators Regulation (EU) 2023/1542)</li><li>US TSCA (Toxic Substance Control Act, Regulation of Persistent, Bio-accumulative, and Toxic Chemicals under Section 6(h), Rule, 40 C.F.R. 751, January 2021)</li><li>Prop 65 (California Safe Drinking Water and Toxic Enforcement Act)</li><li>CEPA (Canadian Environmental Protection Act, 1999)</li><li>OFR regulations such as NY and WA OFR – HTC link to be only shared Amazon internal: https://amazon.awsapps.com/workdocs-preview/index.html#/folder/9ef8b0e49a47687962d44280357d1286d62d5e3ec337deb91469403c56a1a3e0</li><li>PFAS regulations such as CA PFAS, EPA TSCA – HTC link to be only shared Amazon internal: https://amazon.awsapps.com/workdocs-preview/index.html#/folder/9ef8b0e49a47687962d44280357d1286d62d5e3ec337deb91469403c56a1a3e0</li></ul><p>EC DoC required if product is imported into and made available for sale in the following country(ies):</p><ul><li>India RoHS (E-waste Management and Handling Rules 2016, Chapter V, sub-rule (1) of Rule 16)</li></ul><p>EC certification requirements only applicable if product is imported into the respective country for sale:</p><ul><li>UAE RoHS (UAE Cabinet Decision No. 10/2017, Testing and Certification)</li><li>KSA RoHS (SASO Technical Regulation for Restriction of Hazardous Substances in Electrical and Electronic Equipment)</li></ul><p>For suppliers with product manufacturing or assembly processes in China:</p><ul><li>China VOC (Limits for Volatile Organic Compounds) Regulation related to national requirements for VOC content in adhesives, coatings, inks and cleaning agents during manufacturing</li></ul>",
                     controlPlanDetails: "Control plan - EC:\n* Ask CM to complete the compliance documents collection before PVT RR. EC team will provide the risk level for the DVTRR and PVTRR. The compliance documents may include:\n* Signed SDoC (Supplier Declaration of Conformity) document # 05-030181 from suppliers.\n* Full Material Disclosures (\"FMD\") should be provided for all external, user accessible parts from each part supplier, if multiple sourced, for PROP 65 (California substance exposure regulation) compliance verification. Amazon recommends the use of Amazon FMD template 05-038004.\n* Halogen Test Report for all external, user accessible parts from each part supplier, if multiple sourced.\n* Other 3rd Party Lab test reports base on the BOM\n* Material Safety Datasheets (MSDS), if applicable\n* Arrange the EC testing if needed and provide the update to the project team and/or supplier requesting additional information (as needed).",
                     riskLevel: "Medium Risk"
                 },
@@ -2379,6 +2358,222 @@ function getComponentsForDevice(device, deviceType) {
                 console.error('Failed to copy: ', err);
             }
         }
+
+        // Function to generate DFS document with complete template
+function generateDFSDocument(device, deviceType, components, nudEntries = []) {
+    const deviceName = getDeviceDisplayName(device, deviceType);
+    const today = new Date().toLocaleDateString();
+
+    // Get all risks for the device
+    const allRisks = getAllRisks(device, deviceType, components, nudEntries);
+
+    // Start building the document content
+    let content = `
+    <h2>Design for Safety</h2>
+
+    <h3>Executive summary</h3>
+    <p>Add summary here.</p>
+
+    <h3>1. Product Introduction</h3>
+    <p>Add summary here</p>
+
+    <h3>2. Product Benchmarking Table (To be updated)</h3>
+    <p>Capsule<br>Charger</p>
+
+    <h3>3. Product Features and Specs</h3>
+    <h4>3.1 Capsule: Description</h4>
+    <table class="specs-table">
+        <tr>
+            <th>ITEM</th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+        </tr>
+        <tr><td>DISPLAY</td><td></td><td></td><td></td><td></td></tr>
+        <tr><td>HAPTICS</td><td></td><td></td><td></td><td></td></tr>
+        <tr><td>MICROPHONES</td><td></td><td></td><td></td><td></td></tr>
+        <tr><td>CAPSULE SIZE</td><td></td><td></td><td></td><td></td></tr>
+        <tr><td>CAPSULE WEIGHT</td><td></td><td></td><td></td><td></td></tr>
+        <tr><td>CAPSULE MATERIAL</td><td></td><td></td><td></td><td></td></tr>
+        <tr><td>SENSOR</td><td></td><td></td><td></td><td></td></tr>
+        <tr><td>BATTERY CAPACITY, VOLTAGE</td><td></td><td></td><td></td><td></td></tr>
+        <tr><td>BAND ATTACH MECHANISM</td><td></td><td></td><td></td><td></td></tr>
+        <tr><td>BAND CLOSURE</td><td></td><td></td><td></td><td></td></tr>
+        <tr><td>BAND MATERIAL</td><td></td><td></td><td></td><td></td></tr>
+        <tr><td>CHARGER TYPE</td><td></td><td></td><td></td><td></td></tr>
+        <tr><td>Water Resistance Requirements</td><td></td><td></td><td></td><td></td></tr>
+    </table>
+
+    <h4>3.2 Charger:</h4>
+    <table class="specs-table">
+        <tr>
+            <th>ITEM/ CATEGORY</th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+        </tr>
+        <tr><td>CHARGER TYPE</td><td></td><td></td><td></td><td></td><td></td></tr>
+        <tr><td>PRODUCT DIMENSIONS/ WEIGHT</td><td></td><td></td><td></td><td></td><td></td></tr>
+        <tr><td>Cable Length</td><td></td><td></td><td></td><td></td><td></td></tr>
+        <tr><td>Weight</td><td></td><td></td><td></td><td></td><td></td></tr>
+        <tr><td>CHARGER SPECIFICATION</td><td></td><td></td><td></td><td></td><td></td></tr>
+        <tr><td>EE SPECIFICATION/ RATING - charging speed?</td><td></td><td></td><td></td><td></td><td></td></tr>
+        <tr><td>Connector type</td><td></td><td></td><td></td><td></td><td></td></tr>
+        <tr><td>Pogo pin type</td><td></td><td></td><td></td><td></td><td></td></tr>
+        <tr><td>HOUSING MATERIAL</td><td></td><td></td><td></td><td></td><td></td></tr>
+        <tr><td>ACCESSORIES SPECIFICATION</td><td></td><td></td><td></td><td></td><td></td></tr>
+    </table>
+
+    <h3>Lessons Learned</h3>
+    <h4>Safety Lessons Learned</h4>
+    <p>PI Safety Lessons JIRA</p>
+    <p>Wearable lesson learned:</p>
+    <ul>
+        <li>Silkscreen Replacement with Exposed Copper caused grounding on MLB PCB in DVT [ relevance score: 1.0 ]</li>
+        <li>Lessons Learned from Metal Contact Corrosion in Wearable Devices [ relevance score: 1.0 ]</li>
+        <li>Bruce Teardown Observations [ relevance score: 1.0 ]</li>
+        <li>Bruce Capsule bridge (band attach area) cracking during Insertion / Removal Life cycle. [ relevance score: 1.0 ]</li>
+        <li>Dylan grounding issue (resistance test) [ relevance score: 1.0 ]</li>
+        <li>Dylan LL [ relevance score: 1.0 ]</li>
+        <li>Avoid Electrolytic Corrosion in Connectors and Contacts [ relevance score: 1.0 ]</li>
+        <li>Grounding Guidelines for wearables [ relevance score: 1.0 ]</li>
+        <li>Lessons Learned from Metal Contact Corrosion in Wearable Devices [ relevance score: 1.0 ]</li>
+    </ul>
+    <p>AME team/Factory team LL: Bruce AME Lessons Learned</p>
+    <p>REL team LL:</p>
+    <p>Dylan lesson learned Dylan_LL_V7.pdf</p>
+    <p>Wearable corrosion lesson learned</p>
+
+    <h3>Product PD Review</h3>
+    <p>Design architecture:</p>
+    <p>PD related process issue</p>
+
+    <h3>Product EE Review</h3>
+    <p>Device power architecture</p>
+    <p>EE related process issue</p>
+
+    <h3>Safety Risk Summary Table</h3>
+    <table>
+        <tr>
+            <td><strong>Product Section</strong></td>
+            <td><strong>ID</strong></td>
+            <td><strong>Risk Topic</strong></td>
+            <td><strong>Justification</strong></td>
+            <td><strong>Functional Team</strong></td>
+            <td><strong>Assignee</strong></td>
+            <td><strong>Risk Level</strong></td>
+            <td><strong>Design Milestone</strong></td>
+            <td><strong>Close-By Milestone</strong></td>
+            <td><strong>Control Plan/Validation Plan</strong></td>
+        </tr>`;
+
+    // Add mandatory task row
+    content += `<tr class="task-row">
+        <td>Task</td>
+        <td>0.1</td>
+        <td>DFS doc review and legal sign-off</td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+    </tr>`;
+
+    // Group risks by section for hierarchical numbering
+    const risksBySection = {};
+    allRisks.forEach(risk => {
+        if (!risksBySection[risk.section]) {
+            risksBySection[risk.section] = [];
+        }
+        risksBySection[risk.section].push(risk);
+    });
+
+    // Add each risk to the table with hierarchical numbering
+    let sectionCounter = 1;
+
+    for (const section in risksBySection) {
+        let itemCounter = 1;
+
+        risksBySection[section].forEach(risk => {
+            // Generate hierarchical ID (e.g., 1.1, 1.2, 2.1, etc.)
+            const hierarchicalId = `${sectionCounter}.${itemCounter}`;
+
+            content += `<tr>
+                <td>${risk.section}</td>
+                <td>${hierarchicalId}</td>
+                <td>${risk.topic}</td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td>${risk.riskLevel || ''}</td>
+                <td></td>
+                <td>EVT</td>
+                <td>${risk.controlPlanDetails || ''}</td>
+            </tr>`;
+
+            itemCounter++;
+        });
+
+        sectionCounter++;
+    }
+
+    // If no risks were added, add a placeholder row
+    if (Object.keys(risksBySection).length === 0) {
+        content += `<tr>
+            <td colspan="10" style="text-align: center;">No specific risks defined for this device type yet.</td>
+        </tr>`;
+    }
+
+    content += `</table>`;
+
+    // Add PD & Structural Safety Risk Details section
+    content += `<h3>PD & Structural Safety Risk Details</h3>`;
+
+    // Add each section with its risks
+    for (const section in risksBySection) {
+        content += `<h4>${section}</h4>`;
+
+        // Add each risk topic with description, requirement, and control plan
+        risksBySection[section].forEach(risk => {
+            content += `
+            <div class="risk-details">
+                <p><strong>Risk Topic:</strong> ${risk.topic}</p>`;
+
+            // Only add description if it's not empty
+            if (risk.description) {
+                content += `
+                <p><strong>Description:</strong></p>
+                <ul>
+                    <li>${risk.description}</li>
+                </ul>`;
+            }
+
+            content += `
+                <p><strong>Requirement:</strong></p>
+                <ul>
+                    <li>${risk.requirement || ''}</li>
+                </ul>
+
+                <p><strong>Control Plan:</strong></p>
+                <ul>
+                    ${formatControlPlan(risk.controlPlanDetails || '')}
+                </ul>
+
+                <p><strong>Risk Estimation:</strong> ${risk.riskLevel || ''}</p>
+            </div>`;
+        });
+    }
+
+    // Add Appendix
+    content += `<h3>Appendix:</h3>`;
+
+    return content;
+}
     </script>
 </body>
 </html>
