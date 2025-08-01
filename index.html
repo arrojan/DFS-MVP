@@ -480,6 +480,17 @@
         #addNudBtn:hover {
             background-color: #e0e0e0;
         }
+
+        /* Project Name Input Styling */
+        .project-name-input {
+            width: 100%;
+            padding: 12px;
+            font-size: 16px;
+            border-radius: 6px;
+            border: 1px solid var(--border-color);
+            margin-top: 10px;
+            margin-bottom: 20px;
+        }
     </style>
 </head>
 <body>
@@ -518,6 +529,14 @@
         <div class="device-option" data-device="hearable">Hearable</div>
         <div class="device-option" data-device="wearable">Wearable</div>
         <div class="device-option" data-device="efd">EFD</div>
+    </div>
+
+    <div class="section hidden" id="projectNameSection">
+        <div class="section-title">
+            <span class="step-number">1.25</span>
+            <h2>Enter Project Name</h2>
+        </div>
+        <input type="text" id="projectNameInput" class="project-name-input" placeholder="Enter project name">
     </div>
 
     <div class="section hidden" id="deviceTypeSection">
@@ -620,6 +639,7 @@
         // Store selected device and type
         let selectedDevice = '';
         let selectedDeviceType = 'non-ket';
+        let projectName = '';
 
         // Update progress bar - UPDATED to include fill animation and step completion
         function updateProgress(step) {
@@ -660,6 +680,9 @@
 
                 // Store selected device
                 selectedDevice = this.getAttribute('data-device');
+
+                // Show project name section
+                document.getElementById('projectNameSection').classList.remove('hidden');
 
                 // Show device type dropdown only for tablet
                 if (selectedDevice === 'tablet') {
@@ -725,8 +748,7 @@ function getComponentsForDevice(device, deviceType) {
     const deviceComponents = {
         tablet: [
             { value: 'display', label: 'Display' },
-            { value: 'sharpEdges', label: 'Potential Sharp Edges' },
-            { value: 'chargingPort', label: 'Charging Port' },
+            { value: 'usbCPort', label: 'USB C Port' },
             { value: 'speaker', label: 'Speaker' },
             { value: 'battery', label: 'Battery' },
             { value: 'waterResistance', label: 'Water Resistance' },
@@ -735,13 +757,10 @@ function getComponentsForDevice(device, deviceType) {
         ereader: [
             { value: 'battery', label: 'Battery' },
             { value: 'physicalDesign', label: 'Physical Design' },
-            { value: 'chargingPort', label: 'Charging Port' },
-            { value: 'thermalCircuitConcerns', label: 'Thermal & Circuit Concerns' },
-            { value: 'complianceEnvironmentalPolicies', label: 'Compliance & Environmental Policies' }
+            { value: 'usbCPort', label: 'USB C Port' }
         ],
         hearable: [
             { value: 'waterResistance', label: 'Water Resistance' },
-            { value: 'thermalCircuitConcerns', label: 'Thermal & Circuit Concerns' },
             { value: 'battery', label: 'Battery' },
             { value: 'chargingPort', label: 'Charging Port' },
             { value: 'caseEnclosure', label: 'Charging Case' },
@@ -750,18 +769,11 @@ function getComponentsForDevice(device, deviceType) {
         wearable: [
             { value: 'battery', label: 'Battery' },
             { value: 'waterResistance', label: 'Water Resistance' },
-            { value: 'skinContact', label: 'Skin Contact & Comfort' },
-            { value: 'chargingSystem', label: 'Charging System' },
-            { value: 'electrical', label: 'Electrical' },
-            { value: 'thermal', label: 'Thermal' },
-            { value: 'complianceEnvironmentalPolicies', label: 'Compliance & Environmental Policies' }
+            { value: 'chargingSystemWithPads', label: 'Charging System with Pads and Pogo Pins' }
         ],
         efd: [
             { value: 'rockerSwitch', label: 'Rocker Switch' },
-            { value: 'muteButton', label: 'Mute Button' },
             { value: 'lubricant', label: 'Lubricant Materials' },
-            { value: 'moldedParts', label: 'Molded Parts' },
-            { value: 'deviceIngress', label: 'Device Ingress Protection' },
             { value: 'display', label: 'Display/LCD' },
             { value: 'usbPort', label: 'USB-C Port' },
             { value: 'powerAdapter', label: 'Power Adapter' },
@@ -769,7 +781,6 @@ function getComponentsForDevice(device, deviceType) {
             { value: 'ledIndicators', label: 'LED Indicators' },
             { value: 'speaker', label: 'Speaker' },
             { value: 'battery', label: 'Battery' },
-            { value: 'thermalManagement', label: 'Thermal Management' },
             { value: 'compliance', label: 'Compliance & Certification' }
         ]
     };
@@ -800,6 +811,13 @@ function getComponentsForDevice(device, deviceType) {
 
         // Modify the Generate button to show NUD section
         document.getElementById('generateBtn').addEventListener('click', function() {
+            // Get project name
+            projectName = document.getElementById('projectNameInput').value.trim();
+            if (!projectName) {
+                alert('Please enter a project name before continuing.');
+                return;
+            }
+
             // Show NUD section
             document.getElementById('nudSection').classList.remove('hidden');
 
@@ -817,6 +835,13 @@ function getComponentsForDevice(device, deviceType) {
 
         // Add event listener for the continue button in NUD section
         document.getElementById('continueFromNudBtn').addEventListener('click', function() {
+            // Get project name
+            projectName = document.getElementById('projectNameInput').value.trim();
+            if (!projectName) {
+                alert('Please enter a project name before continuing.');
+                return;
+            }
+
             // Get selected components
             const selectedComponents = [];
             document.querySelectorAll('input[name="component"]:checked').forEach(checkbox => {
@@ -946,7 +971,7 @@ function getComponentsForDevice(device, deviceType) {
 
             // Start building the document content
             let content = `
-            <h2>Design for Safety</h2>
+            <h2>${projectName} Design for Safety</h2>
 
             <h3>Executive summary</h3>
             <p>Add summary here.</p>
@@ -1035,16 +1060,16 @@ function getComponentsForDevice(device, deviceType) {
             <h3>Safety Risk Summary Table</h3>
             <table>
                 <tr>
-                    <th>Product Section</th>
-                    <th>ID</th>
-                    <th>Risk Topic</th>
-                    <th>Justification</th>
-                    <th>Functional Team</th>
-                    <th>Assignee</th>
-                    <th>Risk Level</th>
-                    <th>Design Milestone</th>
-                    <th>Close-By Milestone</th>
-                    <th>Control Plan/Validation Plan</th>
+                    <td><strong>Product Section</strong></td>
+                    <td><strong>ID</strong></td>
+                    <td><strong>Risk Topic</strong></td>
+                    <td><strong>Justification</strong></td>
+                    <td><strong>Functional Team</strong></td>
+                    <td><strong>Assignee</strong></td>
+                    <td><strong>Risk Level</strong></td>
+                    <td><strong>Design Milestone</strong></td>
+                    <td><strong>Close-By Milestone</strong></td>
+                    <td><strong>Control Plan/Validation Plan</strong></td>
                 </tr>`;
 
             // Add mandatory task row
@@ -1080,10 +1105,13 @@ function getComponentsForDevice(device, deviceType) {
                     // Generate hierarchical ID (e.g., 1.1, 1.2, 2.1, etc.)
                     const hierarchicalId = `${sectionCounter}.${itemCounter}`;
 
+                    // Modify risk topic to include project name
+                    const modifiedRiskTopic = `[${projectName}] ${risk.topic}`;
+
                     content += `<tr>
                         <td>${risk.section}</td>
                         <td>${hierarchicalId}</td>
-                        <td>${risk.topic}</td>
+                        <td>${modifiedRiskTopic}</td>
                         <td></td>
                         <td></td>
                         <td></td>
@@ -1117,15 +1145,23 @@ function getComponentsForDevice(device, deviceType) {
 
                 // Add each risk topic with description, requirement, and control plan
                 risksBySection[section].forEach(risk => {
+                    // Modify risk topic to include project name
+                    const modifiedRiskTopic = `${risk.topic}`;
+
                     content += `
                     <div class="risk-details">
-                        <p><strong>Risk Topic:</strong> ${risk.topic}</p>
+                        <p><strong>Risk Topic:</strong> ${modifiedRiskTopic}</p>`;
 
+                    // Only add description if it's not empty
+                    if (risk.description) {
+                        content += `
                         <p><strong>Description:</strong></p>
                         <ul>
-                            <li>${risk.description || ''}</li>
-                        </ul>
+                            <li>${risk.description}</li>
+                        </ul>`;
+                    }
 
+                    content += `
                         <p><strong>Requirement:</strong></p>
                         <ul>
                             <li>${risk.requirement || ''}</li>
@@ -1151,11 +1187,9 @@ function getComponentsForDevice(device, deviceType) {
         function getAllRisks(device, deviceType, selectedComponents, nudEntries = []) {
             let allRisks = [];
 
-            // Only add hardcoded risks for tablets
-            if (device === 'tablet') {
-                const hardcodedRisks = getHardcodedRisks();
-                allRisks = [...allRisks, ...hardcodedRisks];
-            }
+            // Get hardcoded risks for the device
+            const hardcodedRisks = getHardcodedRisks(device);
+            allRisks = [...allRisks, ...hardcodedRisks];
 
             // Then add risks for each selected component
             selectedComponents.forEach(component => {
@@ -1171,81 +1205,309 @@ function getComponentsForDevice(device, deviceType) {
             return allRisks;
         }
 
-        // Function to get hardcoded risks that apply to all devices
-        function getHardcodedRisks() {
-            return [
-                {
-                    section: "Electrical",
-                    topic: "Single Fault Failures",
-                    description: "A single fault failure is a failure of any single component in the EE design that causes abnormal power consumption resulting in temperature rise that can be perceived by user or exceed touch temperature limits on surfaces of the device. The failure itself may be caused due to the following situations: 1) Presence of a faulty electronic component, 2) Damage to the component from an external event like a dropping, water ingress, or lightning surge, 3) damage or pin bridges introduced by manufacturing process.",
-                    requirement: "External customer accessible part of the device should not exceed its safe operating touch temperature.",
-                    controlPlanDetails: "Control Plan - EE:\n* All components are supplied with PMIC or charger, which integrates hardware thermal OTP protection inside.\n* NTCs close to SoC, SD port, USB port, and charger IC on MLB to monitor PCB temperature.\n\nControl Plan - EE Integrity:\n* Reserved Yeti circuit for single fault protection.\n\nControl Plan - Thermal:\n* Calculate the maximum thermal power of single fault components and generate single fault power table.\n* Enable proper quantity of NTCs near the fault components that can cause temperature over TS2 spec based on simulation data.\n* Set reasonable threshold for NTCs to cut off power supply and prevent surface from overheat.\n* Validate in xVT tests.",
-                    riskLevel: "Medium Risk"
-                },
-                {
-                    section: "Electrical",
-                    topic: "Protection backups to SoC OTP solution",
-                    description: "Many OTP solutions are relying on SoC processing. In case of SoC hang or disabled, system has the risk of losing OTP controls. An example of such scenario, if the device is taken back from a special high temperature environment such as sun burned vehicle dashboard, the user is attempting to perform a reboot, then the SoC could be activated while nearing or exceeding its work temperature limit and hang.",
-                    requirement: "Beside the thermal policy control, a primary OTP shall be implemented as a bottom-line protection in case of SoC control absence.",
-                    controlPlanDetails: "Control Plan - EE:\n* SoC power is from PMIC. If SoC draws too much power when it hangs, the PMIC efficiency will drop dramatically, which means the PMIC temperature will rise quickly, it will trigger PMIC hardware thermal protection to shut down PMIC to stop power for SoC. Also SoC is placed close to PMIC on PCB, the thermal transferring to PMIC will accelerate the PMIC shutdown. Also PMIC has watchdog mechanism to reboot SoC if system hung is occurred.\n* PMIC will be overheated and its hardware thermal protection can shutdown power for SoC if SoC draws too much power from PMIC when it hangs.\n* SoC is placed close to PMIC on PCB, the thermal transferring to PMIC will accelerate the PMIC shutdown.\n* PMIC and charger integrated pure hardware thermal protection mechanism w/o SoC software involved.\n* PMIC and SoC platform integrated watchdog mechanism to avoid software issue caused by OTP, logic error etc.\n\nControl Plan - Thermal:\n* The SoC OTP will shut down the device when it detects the junction temperature over a certain value if SoC temperature rises gradually while it's working properly.\n* SoC may hang when starting up the device at a very high junction temperature whereas the temperature will not climb due to SoC power as it hangs instantly and will not provide much thermal load.\n* PMIC hardware OTP will shut down power supply to SoC and other components at 150C.\n\nControl Plan - EE Integrity:\n* Conduct ambient temperature heat soak DOE with 5 pcs [insert device name here] HVT device from 25C to 85C to confirm whether SoC can shut down as intended.",
-                    riskLevel: "Medium Risk"
-                },
-                {
-                    section: "Thermal",
-                    topic: "Device surface temperature exceeds safety limit",
-                    description: "Heavy device loading results in high chip temperature that subsequently leads to surface temperature rise that exceeds safety limit, causing user complaints, device return and even burn hazard.",
-                    requirement: "At high loading and thermal policy single fault condition, surface temperature shall not exceed class 2 thermal energy source limit (70C for plastic and 66C for glass, TS2 of IEC62368) for high-touch handle devices (tablets, e-readers).",
-                    controlPlanDetails: "Control Plan - Thermal:\n* At xVT, disable thermal policy and run device at high loading to ensure surface temperatures do not exceed TS2 limit under proper thermal design.\n* SoC will throttle power or shutdown device using temperature read from junction temperature sensors, despite thermal policy functions.",
-                    riskLevel: "Medium Risk"
-                },
-                {
-                    section: "Manufacturing",
-                    topic: "Safety components & battery (if battery operated) damaged by improper assembly process",
-                    description: "Device have safety relevant components and these components have possibility to be damaged by improper assembly process which may lead to device malfunction and may cause safety related issues.",
-                    requirement: "All the FATP stations have SOPs to guide operators to assemble device to avoid potential damage to safety components and battery.",
-                    controlPlanDetails: "Control Plan - MTM:\n* Huaqin has introduced auto-assembly for battery assembly.\n* Battery SRA pressing force will be controlled by fixture.",
-                    riskLevel: "Medium Risk"
-                },
-                {
-                    section: "Manufacturing",
-                    topic: "Solder ball issue",
-                    description: "A solder ball is the most common type of defect that occurs in the SMT assembly process which leads to potential short or undesired compression to battery. Solder balling can be caused by poor process conditions with gassing from the flux during wave contact or excessive turbulence as the solder flows back into the bath which causes spitting. Solder balls can be ejected from the joint area during soldering due to excessive outgassing of the PCB.",
-                    requirement: "No solder ball larger than 0.1 mm is allowed.\nValid solder ball detection method is required on the production line.",
-                    controlPlanDetails: "Control Plan - MTM:\n* SMT standard practice: controlled by stencil design and SPI/AOI control.",
-                    riskLevel: "Low Risk"
-                },
-                {
-                    section: "Safety Compliance",
-                    topic: "Product Safety Compliance & Certification Requirements",
-                    description: "Compliance to the applicable safety standard IEC60950 Ed.2 + Am.1 + Am.2, IEC62368-1 Ed. 2, and IEC62368-1 Ed. 3 IEC62668-1 Ed. 4 with National Deviations covering all the POR regions.",
-                    requirement: "Design shall comply to a certification agency compliance assessment, in accordance to the applicable standards listed above.",
-                    controlPlanDetails: "Control Plan:\n* HVT Phase - Construction Review + full safety pre-compliance testing to standards listed above.\n* Deliverable – Construction review letter, completed test data sheets.\n* EVT Phase – Construction Review (delta vs HVT) + full safety compliance testing to standards listed above.\n* Deliverable – CB Test Reports & Certificates per noted standards above.\n* DVT Phase - Construction Review (delta vs EVT) + regression safety compliance testing to standards listed above.\n* Deliverable - CB Test Reports & Certifications per noted standards above",
-                    riskLevel: "Medium Risk"
-                },
-                {
-                    section: "Environment Compliance",
-                    topic: "Device material causes harmful effects to human or environment",
-                    requirement: "<p>Amazon, Ring and Blink branded products, including packaging and batteries (where applicable) must meet the general EC requirements to comply with the respective regional, national or local environmental laws and regulations where they are put on the market.</p><p>For regulations that are already adopted, detailed compliance requirements and substance limits are described in the Amazon Devices and Services Restricted and Reportable Substance List (Amazon Devices RSL), PN: 05-003018, and Amazon Supplier Declaration of Compliance (SDoC), PN: 05-030181.</p><p>For upcoming regulations (which are currently in proposed phase, without a clear compliance deadline), requiring restrictions and/or reporting of substances proposed for regulation such as Per- and Poly- Fluoro Alkyl Substances (PFASs), we recommend phasing out materials/products that contain these substances to suitable alternatives as they become available.</p><p>EC requirements to meet restricted substance laws and regulations applicable to most products globally: (For complete list of impacting regulations, please refer to Amazon Devices RSL)</p><ul><li>EU RoHS (Restriction of Hazardous Substances Directive 2011/65/EU)</li><li>EU REACH (Registration, Evaluation Authorization and Restriction of Chemicals Regulation No. 1907/2006)</li><li>EU POPs (Persistent Organic Pollutants Regulation No. 2019/1021)</li><li>EU PCKG (Packaging and Packaging Waste Directive 94/62/EC; Annex II, Par.1)</li><li>EU BATT (Batteries and Accumulators and Waste Batteries and Accumulators Regulation (EU) 2023/1542)</li><li>US TSCA (Toxic Substance Control Act, Regulation of Persistent, Bio-accumulative, and Toxic Chemicals under Section 6(h), Rule, 40 C.F.R. 751, January 2021)</li><li>Prop 65 (California Safe Drinking Water and Toxic Enforcement Act)</li><li>CEPA (Canadian Environmental Protection Act, 1999)</li><li>OFR regulations such as NY and WA OFR – HTC link to be only shared Amazon internal: https://amazon.awsapps.com/workdocs-preview/index.html#/folder/9ef8b0e49a47687962d44280357d1286d62d5e3ec337deb91469403c56a1a3e0</li><li>PFAS regulations such as CA PFAS, EPA TSCA – HTC link to be only shared Amazon internal: https://amazon.awsapps.com/workdocs-preview/index.html#/folder/9ef8b0e49a47687962d44280357d1286d62d5e3ec337deb91469403c56a1a3e0</li></ul><p>EC DoC required if product is imported into and made available for sale in the following country(ies):</p><ul><li>India RoHS (E-waste Management and Handling Rules 2016, Chapter V, sub-rule (1) of Rule 16)</li></ul><p>EC certification requirements only applicable if product is imported into the respective country for sale:</p><ul><li>UAE RoHS (UAE Cabinet Decision No. 10/2017, Testing and Certification)</li><li>KSA RoHS (SASO Technical Regulation for Restriction of Hazardous Substances in Electrical and Electronic Equipment)</li></ul><p>For suppliers with product manufacturing or assembly processes in China:</p><ul><li>China VOC (Limits for Volatile Organic Compounds) Regulation related to national requirements for VOC content in adhesives, coatings, inks and cleaning agents during manufacturing</li></ul>",
-                    controlPlanDetails: "Control plan - EC:\n* Ask CM to complete the compliance documents collection before PVT RR. EC team will provide the risk level for the DVTRR and PVTRR. The compliance documents may include:\n* Signed SDoC (Supplier Declaration of Conformity) document # 05-030181 from suppliers.\n* Full Material Disclosures (\"FMD\") should be provided for all external, user accessible parts from each part supplier, if multiple sourced, for PROP 65 (California substance exposure regulation) compliance verification. Amazon recommends the use of Amazon FMD template 05-038004.\n* Halogen Test Report for all external, user accessible parts from each part supplier, if multiple sourced.\n* Other 3rd Party Lab test reports base on the BOM\n* Material Safety Datasheets (MSDS), if applicable\n* Arrange the EC testing if needed and provide the update to the project team and/or supplier requesting additional information (as needed).",
-                    riskLevel: "Medium Risk"
-                },
-                {
-                    section: "Packaging",
-                    topic: "Device and/or components damaged during transit",
-                    description: "A customer might receive a product and/or accessories damaged during transit that may cause safety issues to the customer (e.g. broken glass screens/bent corners causing sharp edges, damaged internal components, etc..)",
-                    requirement: "The product must pass bare product reliability tests.\nThe packaged product and accessories must not have severe damage that may cause safety issues to the customer after package transit testing.\nThe in-box documentation, safety markings and safety information must not have severe damage that may lead to improper use or illegibility of such warnings.",
-                    controlPlanDetails: "Control Plan - PKG:\n* Packaging transit testing to be conducted at each xVT-stage. Refer to 05-009415 Packaging Transit Test Standards and 05-029425 post CET inspection criteria\n\nControl Plan - REL:\n* Reliability test will be conducted at each xVT-stage to monitor the risk(e.g. broken glass screens/bent corners causing sharp edges, damaged internal components, etc..) under mechanical impact.",
-                    riskLevel: "Medium Risk"
-                },
-                {
-                    section: "Consumer Misuse",
-                    topic: "Misuse high watt power adapter",
-                    description: "A customer could have a fair possibility to use a non-Amazon power adapter to charge the device which may over draw if a mismatched or even a non compliance adapter offers higher voltage. This over-limit voltage may damage the charge IC and components on the path, poses potential safety risks.",
-                    requirement: "[insert device name here] shall have OVP feature to withstand charging voltage up to 28V DC (the highest charging DC voltage under USB-C connection on the market).",
-                    controlPlanDetails: "Control Plan - Software:\n* After Vbus exceed 6.5V for normal 5V charging or 12V for PD 9V charging, software will turn off charging to safe device from over voltage, confirmed by charger SW owner.\n\nControl Plan - EE:\n* [insert device name here] charger IC and load switch on VBUS is able to withstand 22V[base] and 28V[plus] DC voltage respectively. 22V is base spec defined in SOW.\n\nControl Plan - Reliability:\n* Connect [insert device name here] USB-C port with 28V DC power to verify its OVP protection on charge IC in HVT to cover the risk of using a non compliance adapter.\n\nControl Plan - Written Instructions:\n* Specifications of charger will be listed in the instructions. Safety instructions to include warnings regarding not using non-OEM power adapter to charge the device.",
-                    riskLevel: "Medium Risk"
-                }
-            ];
+        // Function to get hardcoded risks for a specific device
+        function getHardcodedRisks(device) {
+            // Define hardcoded risks for each device type
+            const deviceSpecificRisks = {
+                tablet: [
+                    {
+                        section: "Electrical",
+                        topic: "Single Fault Failures",
+                        description: "A single fault failure is a failure of any single component in the EE design that causes abnormal power consumption resulting in temperature rise that can be perceived by user or exceed touch temperature limits on surfaces of the device. The failure itself may be caused due to the following situations: 1) Presence of a faulty electronic component, 2) Damage to the component from an external event like a dropping, water ingress, or lightning surge, 3) damage or pin bridges introduced by manufacturing process.",
+                        requirement: "External customer accessible part of the device should not exceed its safe operating touch temperature.",
+                        controlPlanDetails: "Control Plan - EE:\n* All components are supplied with PMIC or charger, which integrates hardware thermal OTP protection inside.\n* NTCs close to SoC, SD port, USB port, and charger IC on MLB to monitor PCB temperature.\n\nControl Plan - EE Integrity:\n* Reserved Yeti circuit for single fault protection.\n\nControl Plan - Thermal:\n* Calculate the maximum thermal power of single fault components and generate single fault power table.\n* Enable proper quantity of NTCs near the fault components that can cause temperature over TS2 spec based on simulation data.\n* Set reasonable threshold for NTCs to cut off power supply and prevent surface from overheat.\n* Validate in xVT tests.",
+                        riskLevel: "Medium Risk"
+                    },
+                    {
+                        section: "Electrical",
+                        topic: "Protection backups to SoC OTP solution",
+                        description: "Many OTP solutions are relying on SoC processing. In case of SoC hang or disabled, system has the risk of losing OTP controls. An example of such scenario, if the device is taken back from a special high temperature environment such as sun burned vehicle dashboard, the user is attempting to perform a reboot, then the SoC could be activated while nearing or exceeding its work temperature limit and hang.",
+                        requirement: "Beside the thermal policy control, a primary OTP shall be implemented as a bottom-line protection in case of SoC control absence.",
+                        controlPlanDetails: "Control Plan - EE:\n* SoC power is from PMIC. If SoC draws too much power when it hangs, the PMIC efficiency will drop dramatically, which means the PMIC temperature will rise quickly, it will trigger PMIC hardware thermal protection to shut down PMIC to stop power for SoC. Also SoC is placed close to PMIC on PCB, the thermal transferring to PMIC will accelerate the PMIC shutdown. Also PMIC has watchdog mechanism to reboot SoC if system hung is occurred.\n* PMIC will be overheated and its hardware thermal protection can shutdown power for SoC if SoC draws too much power from PMIC when it hangs.\n* SoC is placed close to PMIC on PCB, the thermal transferring to PMIC will accelerate the PMIC shutdown.\n* PMIC and charger integrated pure hardware thermal protection mechanism w/o SoC software involved.\n* PMIC and SoC platform integrated watchdog mechanism to avoid software issue caused by OTP, logic error etc.\n\nControl Plan - Thermal:\n* The SoC OTP will shut down the device when it detects the junction temperature over a certain value if SoC temperature rises gradually while it's working properly.\n* SoC may hang when starting up the device at a very high junction temperature whereas the temperature will not climb due to SoC power as it hangs instantly and will not provide much thermal load.\n* PMIC hardware OTP will shut down power supply to SoC and other components at 150C.\n\nControl Plan - EE Integrity:\n* Conduct ambient temperature heat soak DOE with 5 pcs [insert device name here] HVT device from 25C to 85C to confirm whether SoC can shut down as intended.",
+                        riskLevel: "Medium Risk"
+                    },
+                    {
+                        section: "Thermal",
+                        topic: "Device surface temperature exceeds safety limit",
+                        description: "Heavy device loading results in high chip temperature that subsequently leads to surface temperature rise that exceeds safety limit, causing user complaints, device return and even burn hazard.",
+                        requirement: "At high loading and thermal policy single fault condition, surface temperature shall not exceed class 2 thermal energy source limit (70C for plastic and 66C for glass, TS2 of IEC62368) for high-touch handle devices (tablets, e-readers).",
+                        controlPlanDetails: "Control Plan - Thermal:\n* At xVT, disable thermal policy and run device at high loading to ensure surface temperatures do not exceed TS2 limit under proper thermal design.\n* SoC will throttle power or shutdown device using temperature read from junction temperature sensors, despite thermal policy functions.",
+                        riskLevel: "Medium Risk"
+                    },
+                    {
+                        section: "Manufacturing",
+                        topic: "Safety components & battery (if battery operated) damaged by improper assembly process",
+                        description: "Device have safety relevant components and these components have possibility to be damaged by improper assembly process which may lead to device malfunction and may cause safety related issues.",
+                        requirement: "All the FATP stations have SOPs to guide operators to assemble device to avoid potential damage to safety components and battery.",
+                        controlPlanDetails: "Control Plan - MTM:\n* Huaqin has introduced auto-assembly for battery assembly.\n* Battery SRA pressing force will be controlled by fixture.",
+                        riskLevel: "Medium Risk"
+                    },
+                    {
+                        section: "Manufacturing",
+                        topic: "Solder ball issue",
+                        description: "A solder ball is the most common type of defect that occurs in the SMT assembly process which leads to potential short or undesired compression to battery. Solder balling can be caused by poor process conditions with gassing from the flux during wave contact or excessive turbulence as the solder flows back into the bath which causes spitting. Solder balls can be ejected from the joint area during soldering due to excessive outgassing of the PCB.",
+                        requirement: "No solder ball larger than 0.1 mm is allowed.\nValid solder ball detection method is required on the production line.",
+                        controlPlanDetails: "Control Plan - MTM:\n* SMT standard practice: controlled by stencil design and SPI/AOI control.",
+                        riskLevel: "Low Risk"
+                    },
+                    {
+                        section: "Safety Compliance",
+                        topic: "Product Safety Compliance & Certification Requirements",
+                        description: "Compliance to the applicable safety standard IEC60950 Ed.2 + Am.1 + Am.2, IEC62368-1 Ed. 2, and IEC62368-1 Ed. 3 IEC62668-1 Ed. 4 with National Deviations covering all the POR regions.",
+                        requirement: "Design shall comply to a certification agency compliance assessment, in accordance to the applicable standards listed above.",
+                        controlPlanDetails: "Control Plan:\n* HVT Phase - Construction Review + full safety pre-compliance testing to standards listed above.\n* Deliverable – Construction review letter, completed test data sheets.\n* EVT Phase – Construction Review (delta vs HVT) + full safety compliance testing to standards listed above.\n* Deliverable – CB Test Reports & Certificates per noted standards above.\n* DVT Phase - Construction Review (delta vs EVT) + regression safety compliance testing to standards listed above.\n* Deliverable - CB Test Reports & Certifications per noted standards above",
+                        riskLevel: "Medium Risk"
+                    },
+                    {
+                        section: "Environment Compliance",
+                        topic: "Device material causes harmful effects to human or environment",
+                        requirement: "<p>Amazon, Ring and Blink branded products, including packaging and batteries (where applicable) must meet the general EC requirements to comply with the respective regional, national or local environmental laws and regulations where they are put on the market.</p><p>For regulations that are already adopted, detailed compliance requirements and substance limits are described in the Amazon Devices and Services Restricted and Reportable Substance List (Amazon Devices RSL), PN: 05-003018, and Amazon Supplier Declaration of Compliance (SDoC), PN: 05-030181.</p><p>For upcoming regulations (which are currently in proposed phase, without a clear compliance deadline), requiring restrictions and/or reporting of substances proposed for regulation such as Per- and Poly- Fluoro Alkyl Substances (PFASs), we recommend phasing out materials/products that contain these substances to suitable alternatives as they become available.</p><p>EC requirements to meet restricted substance laws and regulations applicable to most products globally: (For complete list of impacting regulations, please refer to Amazon Devices RSL)</p><ul><li>EU RoHS (Restriction of Hazardous Substances Directive 2011/65/EU)</li><li>EU REACH (Registration, Evaluation Authorization and Restriction of Chemicals Regulation No. 1907/2006)</li><li>EU POPs (Persistent Organic Pollutants Regulation No. 2019/1021)</li><li>EU PCKG (Packaging and Packaging Waste Directive 94/62/EC; Annex II, Par.1)</li><li>EU BATT (Batteries and Accumulators and Waste Batteries and Accumulators Regulation (EU) 2023/1542)</li><li>US TSCA (Toxic Substance Control Act, Regulation of Persistent, Bio-accumulative, and Toxic Chemicals under Section 6(h), Rule, 40 C.F.R. 751, January 2021)</li><li>Prop 65 (California Safe Drinking Water and Toxic Enforcement Act)</li><li>CEPA (Canadian Environmental Protection Act, 1999)</li><li>OFR regulations such as NY and WA OFR – HTC link to be only shared Amazon internal: https://amazon.awsapps.com/workdocs-preview/index.html#/folder/9ef8b0e49a47687962d44280357d1286d62d5e3ec337deb91469403c56a1a3e0</li><li>PFAS regulations such as CA PFAS, EPA TSCA – HTC link to be only shared Amazon internal: https://amazon.awsapps.com/workdocs-preview/index.html#/folder/9ef8b0e49a47687962d44280357d1286d62d5e3ec337deb91469403c56a1a3e0</li></ul><p>EC DoC required if product is imported into and made available for sale in the following country(ies):</p><ul><li>India RoHS (E-waste Management and Handling Rules 2016, Chapter V, sub-rule (1) of Rule 16)</li></ul><p>EC certification requirements only applicable if product is imported into the respective country for sale:</p><ul><li>UAE RoHS (UAE Cabinet Decision No. 10/2017, Testing and Certification)</li><li>KSA RoHS (SASO Technical Regulation for Restriction of Hazardous Substances in Electrical and Electronic Equipment)</li></ul><p>For suppliers with product manufacturing or assembly processes in China:</p><ul><li>China VOC (Limits for Volatile Organic Compounds) Regulation related to national requirements for VOC content in adhesives, coatings, inks and cleaning agents during manufacturing</li></ul>",
+                        controlPlanDetails: "Control plan - EC:\n* Ask CM to complete the compliance documents collection before PVT RR. EC team will provide the risk level for the DVTRR and PVTRR. The compliance documents may include:\n* Signed SDoC (Supplier Declaration of Conformity) document # 05-030181 from suppliers.\n* Full Material Disclosures (\"FMD\") should be provided for all external, user accessible parts from each part supplier, if multiple sourced, for PROP 65 (California substance exposure regulation) compliance verification. Amazon recommends the use of Amazon FMD template 05-038004.\n* Halogen Test Report for all external, user accessible parts from each part supplier, if multiple sourced.\n* Other 3rd Party Lab test reports base on the BOM\n* Material Safety Datasheets (MSDS), if applicable\n* Arrange the EC testing if needed and provide the update to the project team and/or supplier requesting additional information (as needed).",
+                        riskLevel: "Medium Risk"
+                    },
+                    {
+                        section: "Packaging",
+                        topic: "Device and/or components damaged during transit",
+                        description: "A customer might receive a product and/or accessories damaged during transit that may cause safety issues to the customer (e.g. broken glass screens/bent corners causing sharp edges, damaged internal components, etc..)",
+                        requirement: "The product must pass bare product reliability tests.\nThe packaged product and accessories must not have severe damage that may cause safety issues to the customer after package transit testing.\nThe in-box documentation, safety markings and safety information must not have severe damage that may lead to improper use or illegibility of such warnings.",
+                        controlPlanDetails: "Control Plan - PKG:\n* Packaging transit testing to be conducted at each xVT-stage. Refer to 05-009415 Packaging Transit Test Standards and 05-029425 post CET inspection criteria\n\nControl Plan - REL:\n* Reliability test will be conducted at each xVT-stage to monitor the risk(e.g. broken glass screens/bent corners causing sharp edges, damaged internal components, etc..) under mechanical impact.",
+                        riskLevel: "Medium Risk"
+                    },
+                    {
+                        section: "Consumer Misuse",
+                        topic: "Misuse high watt power adapter",
+                        description: "A customer could have a fair possibility to use a non-Amazon power adapter to charge the device which may over draw if a mismatched or even a non compliance adapter offers higher voltage. This over-limit voltage may damage the charge IC and components on the path, poses potential safety risks.",
+                        requirement: "[insert device name here] shall have OVP feature to withstand charging voltage up to 28V DC (the highest charging DC voltage under USB-C connection on the market).",
+                        controlPlanDetails: "Control Plan - Software:\n* After Vbus exceed 6.5V for normal 5V charging or 12V for PD 9V charging, software will turn off charging to safe device from over voltage, confirmed by charger SW owner.\n\nControl Plan - EE:\n* [insert device name here] charger IC and load switch on VBUS is able to withstand 22V[base] and 28V[plus] DC voltage respectively. 22V is base spec defined in SOW.\n\nControl Plan - Reliability:\n* Connect [insert device name here] USB-C port with 28V DC power to verify its OVP protection on charge IC in HVT to cover the risk of using a non compliance adapter.\n\nControl Plan - Written Instructions:\n* Specifications of charger will be listed in the instructions. Safety instructions to include warnings regarding not using non-OEM power adapter to charge the device.",
+                        riskLevel: "Medium Risk"
+                    },
+                    {
+                        section: "Product Design Structural",
+                        topic: "Sharp edge features",
+                        description: "Device has sharp edges and very small corner radius can make usage inconvenient. Sharp edges and corners may cause injury issue to user by skin contact and hamper the customer experience overall.",
+                        requirement: "These are the generic design guideline for corner radius [C] and top/ bottom edge radius [E]: If corner radius [C] is less than 2.5mm, the top/ bottom edge radius [E] should be at least 0.3 mm. If corner radius [C] is more than 2.5mm, the top/ bottom edge radius [E] should be at least 0.1 mm. Minimum radius for corner radius should be at least 0.3 mm.",
+                        controlPlanDetails: "Control Plan - PD:\n* [insert device name here] exterior geometry follows ID design with 1.2mm edge radius, button edge radius 0.15mm fulfill the requirement.\n\nControl Plan - Display:\n* There is 0.1mm chamfer on the display edge to avoid injury to user.",
+                        riskLevel: "Medium Risk"
+                    }
+                ],
+                ereader: [
+                    {
+                        section: "PD/Structural",
+                        topic: "Battery shifts after tumble/drop",
+                        description: "Battery de-laminates or shifts after tumble/drop.",
+                        requirement: "No significant battery deformation or shift after tumble/drop.",
+                        controlPlanDetails: "* Optimize PSA material, XY footprint and assembly process to prevent significant battery shift after tumble/drop.\n* Add 05-046054 on PD drawing for PSA liner spec per recent lessons learned on Sangria to maintain silicone free PSA surface\n* Inspection of battery before and after reliability tests in HVT to validate.",
+                        riskLevel: "Medium Risk"
+                    },
+                    {
+                        section: "Thermal",
+                        topic: "Surface temperature exceeding ergo/safety limit",
+                        description: "(1) Unit exposed to excessive heat during charging like direct sunlight. (2) Unit covered with blanket or other material preventing air circulation.",
+                        requirement: "Incorporate thermal policy to shutdown the device when virtual sensor temperature/component temperature exceeds threshold.",
+                        controlPlanDetails: "* Implement thermal policy for managing surface temperature on [insert device name here] and mitigate risks.",
+                        riskLevel: "Medium Risk"
+                    },
+                    {
+                        section: "Thermal",
+                        topic: "Increased device power consumption and heating from electrical shorts",
+                        description: "A short, either from a failing component or from contamination, can lead to device power consumption and heating. This could be an internal short in a component, bridging due to solder creep/tin whisker, wear on a cable assembly, impacts from vibration/drop/tumble, or a conductive contaminant (e.g. gatorade) inside a device.",
+                        requirement: "If a short occurs on a board, the power rails should have limits that correspond to what the components and peripherals need and should not source unlimited current to a fault.",
+                        controlPlanDetails: "* The current will be limited by the OCP in place.\n* Implementation of Single Fault Protection Circuit (SFPC) to shut off power if abnormal temperatures are detected to prevent the device from reaching harmful temperatures.",
+                        riskLevel: "Medium Risk"
+                    },
+                    {
+                        section: "Thermal",
+                        topic: "In case of short or other hard faults with SoC, it may run hot and heat up the system",
+                        description: "If there is a hard fault (SOC cannot restart by watchdog) then the SOC can run warm and not shut down. Even if the SOC is not hung a fault on certain rails (e.g. main system always-on voltage) may be outside the control of the SOC. This could lead to thermal policy not being correctly enforced in a failure state.",
+                        requirement: "Thermal policy to ensure that device overheating is prevented.",
+                        controlPlanDetails: "* Implementation of Single Fault Protection Circuit (SFPC) to shut off power if abnormal temperatures are detected to prevent the device from reaching harmful temperatures.",
+                        riskLevel: "Medium Risk"
+                    }
+                ],
+                hearable: [
+                    {
+                        section: "EE & EE Integrity",
+                        topic: "Earbud soft or hard short on MLB or in-ear flex",
+                        description: "Soft short or hard short due to component single fault failure or liquid ingress led to the device overheating when the bud is either off the case or inside the case.",
+                        requirement: "The device surface shall not exceed the thermal TS2 safety limit under fault condition.",
+                        controlPlanDetails: "Control Plan:\n* Bud battery PCM overcurrent protection is 170mA max.\n* HW thermal cut off circuit on the MLB and in-ear flex which cuts off both the battery power and VCHRG power when temperature exceeds the limits.\n* PIC NTC thermal cut off - 60C+/-3C (Battery, MLB off charger).\n* MLB NTC thermal cut off - 52C +/-3C (MLB).\n* Inear Flex NTC thermal cut off - 55C +/- 3C (Prox sensor).\n* VA sensor will be covered by new CPLD design with fail safe temp sensing circuit.\n* The worst bud detection interval is 1min, if the bud has a short at the CPLD input or ESD diode, the case shall detect it within 1min under the worst case.\n* Add liquid proof coating to the unprotected PCB area (battery pads, battery PIC circuit, thermal cut off single fault circuit including the CPLD circuit).",
+                        riskLevel: "High Risk"
+                    },
+                    {
+                        section: "Thermal",
+                        topic: "Bud/Case over ergonomic and safety touch temperature limit during normal operation",
+                        description: "Device power consumption goes higher than thermal envelope due to additional feature increase, new DSP tuning, etc.",
+                        requirement: "The device surface shall not exceed the thermal TS1 safety limit under normal condition.",
+                        controlPlanDetails: "Control Plan:\n* Have SW QA checkpoint to maintain the maximum power within thermal budget.\n* Have both short-term and long-term virtual sensor and software policy. Device shuts down in extreme conditions.",
+                        riskLevel: "Medium Risk"
+                    }
+                ],
+                wearable: [
+                    {
+                        section: "Skin Contact & Comfort",
+                        topic: "Mechanical Skin Irritation Risk",
+                        description: "Device's thermal probe protrudes 0.2mm from the bottom surface of the device. This could cause discomfort over time.",
+                        requirement: "Discomfort - to be validated via Beta testing.",
+                        controlPlanDetails: "Control Plan:\n1. Beta study using EVT capsules.",
+                        riskLevel: "Low Risk"
+                    },
+                    {
+                        section: "Skin Contact & Comfort",
+                        topic: "Skin Sensitization and Dermal Irritation",
+                        description: "Risk assessment of known skin sensitizers and dermal irritants.",
+                        requirement: "Levels of skin sensitizers and dermal irritants must be within acceptable limits.",
+                        controlPlanDetails: "Control Plan:\n* No actions needed. The EVT samples were within acceptable limits and deemed to be low risk for skin sensitization and dermal irritation.",
+                        riskLevel: "Low Risk"
+                    },
+                    {
+                        section: "Electrical",
+                        topic: "Electrical single fault failure while device on wrist",
+                        description: "Single fault leading to thermal runaway when worn on the wrist, on internal components such as SoC/BTC/Haptic Driver/Display Driver.",
+                        requirement: "To meet TS2 limit of 58C on capsule.",
+                        controlPlanDetails: "Control Plan:\n* For single fault cases where MCU is still functional and firmware is responsive, the firmware will sample the board temperature sensor every 30s. In case of an over temperature event, firmware shall put the device into thermal mode.\n* For single fault cases where MCU is not functional and firmware is inactive:\n  * Current battery spec sets OTP at 50C +/- 3C and OCP max at 169mA to mitigate the power dissipation inside the capsule.\n  * Validated surface temperature within TS2 of 58C for worst single fault scenarios (battery OCP trips for fault power of 642mW at HRM AFE)",
+                        riskLevel: "High Risk"
+                    },
+                    {
+                        section: "Electrical",
+                        topic: "Electrical single fault failure while device on the charger",
+                        description: "Single fault leading to thermal runaway during charging, on internal components such as SoC/BTC/Haptic Driver/Display Driver when on the charger.",
+                        requirement: "To meet TS2 limit of 70C (less than 1min) on plastic, and 66C on glass, 61C for metal.",
+                        controlPlanDetails: "Control Plan:\n* For single fault cases where MCU is functional and firmware is responsive, firmware will put the device in Safe Mode, disabling charging and reducing VIN_ILIM to 98mA. Firmware will also configure the PMIC to disconnect battery from the ASYS power path.\n* For single fault cases where MCU is not functional and firmware is not responsive:\n  * PMIC watchdog will expire in 32s and device will enter Safe Mode automatically. This disables charging and reduces VIN_ILIM to 98mA.\n  * LDO1/LDO2/SW1/SW2 enters the mode 0 setting (the default factory setting for the initial power up)\n  * Battery pack has an internal thermal monitoring circuit which will cut power to the device if the battery pack temperature exceeds 50C +/- 3C.",
+                        riskLevel: "High Risk"
+                    },
+                    {
+                        section: "Thermal",
+                        topic: "Charging the battery without battery pack thermal monitoring and enforcing JEITA profile poses a safety risk",
+                        description: "Charging without proper thermal monitoring can lead to safety risks.",
+                        requirement: "Battery shall be charged only when the firmware is active and battery temperature monitoring is enabled in the PMIC.",
+                        controlPlanDetails: "Control Plan:\n* Device boots up in Safe Mode (Mode 0) by default and charging is disabled. After device boot up is complete, firmware enables battery thermal monitoring and enables charging.\n* If a situation arises where firmware is non responsive, PMIC watchdog will expire in 32 seconds, switching the device back to Safe Mode (Mode 0), disabling charging.",
+                        riskLevel: "Medium Risk"
+                    },
+                    {
+                        section: "Thermal",
+                        topic: "SW thermal management policy for over temperature case and temperature sensor non-functional",
+                        description: "If either of the temperature sensors fails, an error handling mechanism will be triggered by SW thermal policy.",
+                        requirement: "To meet TS2 limit of 58C on capsule when worn on wrist; 70C for plastic, 66C for glass and 61C for metal while charging.",
+                        controlPlanDetails: "Control Plan:\n* SW thermal policy polls the two onboard temperature sensors every 30s, if either of the sensors fail for 3 consecutive times, device will reboot\n* Thermal policy has been enabled for Beta users. Thermal policy entry and exit criteria validated in EVT.",
+                        riskLevel: "Medium Risk"
+                    }
+                ],
+                efd: [
+                    {
+                        section: "Product Design Structural",
+                        topic: "Liquid ingression into mute button area",
+                        description: "Liquid may enter through the mute button area, leading to dysfunctional mute button or privacy circuit failure.",
+                        requirement: "Device should maintain functionality after exposure to normal amounts of liquid that may contact the mute button.",
+                        controlPlanDetails: "Control Plan - PD:\n* Pending decision of using Piezo DOE to seal the gap between",
+                        riskLevel: "Medium Risk"
+                    },
+                    {
+                        section: "Electrical",
+                        topic: "ESD risk through mute button",
+                        description: "Electrostatic discharge may occur through the mute button, potentially affecting the mute circuit and mute LED (privacy circuit).",
+                        requirement: "Device must maintain functionality after ESD events through the mute button.",
+                        controlPlanDetails: "Control Plan - ESD:\n* Cable harness is required.\n* Pending ESD assessment (OK2FAB item)",
+                        riskLevel: "Medium Risk"
+                    },
+                    {
+                        section: "Product Design Structural",
+                        topic: "Mute LED indicator and privacy control",
+                        description: "Failure of mute LED indicator may lead to privacy concerns if users are unaware of device status.",
+                        requirement: "Mute LED indicator must clearly indicate privacy status and be reliable.",
+                        controlPlanDetails: "",
+                        riskLevel: "Medium Risk"
+                    },
+                    {
+                        section: "Product Design Structural",
+                        topic: "Mute icon edge radius",
+                        description: "Sharp edges on mute icon may cause discomfort or minor injury to users.",
+                        requirement: "All edges must meet safety requirements for edge radius.",
+                        controlPlanDetails: "Control Plan - PD:\n* Pending dimension info and design snapshot",
+                        riskLevel: "Low Risk"
+                    },
+                    {
+                        section: "Reliability",
+                        topic: "Mute privacy deficiency post drop",
+                        description: "Device drop may cause mute button or privacy circuit to fail, leading to privacy concerns.",
+                        requirement: "Mute functionality should remain operational after normal drop events.",
+                        controlPlanDetails: "Control Plan - PD:\n* Drop analysis and EVT REL drop test did not show mic privacy circuit damage so far - Medium to low risk.",
+                        riskLevel: "Medium Risk"
+                    },
+                    {
+                        section: "Product Design Structural",
+                        topic: "Sharp edge/corner on molded components",
+                        description: "Molded components may have sharp edges or corners that could cause discomfort or injury to users.",
+                        requirement: "All molded components must meet safety requirements for edge and corner radius.",
+                        controlPlanDetails: "",
+                        riskLevel: "Medium Risk"
+                    },
+                    {
+                        section: "Product Design Structural",
+                        topic: "Liquid ingress into the device through speaker port",
+                        description: "Liquid may enter the device through the speaker port or other entrances, potentially causing electrical shorts or other failures.",
+                        requirement: "Device should be designed to minimize liquid ingress through speaker ports and other openings.",
+                        controlPlanDetails: "",
+                        riskLevel: "Medium Risk"
+                    },
+                    {
+                        section: "Product Design Structural",
+                        topic: "Spill risk on the power adapter area",
+                        description: "Liquid spills near the power adapter connection may cause electrical shorts or other failures.",
+                        requirement: "Power adapter connection should be designed to minimize risk from liquid spills.",
+                        controlPlanDetails: "",
+                        riskLevel: "Medium Risk"
+                    },
+                    {
+                        section: "Product Design Structural",
+                        topic: "Liquid ingress through I/O board and bottom of the housing",
+                        description: "Liquid may pool at the bottom of the device and enter through the I/O board or housing seams.",
+                        requirement: "Device should be designed to prevent liquid pooling and ingress through the bottom of the housing.",
+                        controlPlanDetails: "Control Plan - PD:\n* Woofer area to be sealed? Samantha Devapiriam\n* Check any path allowing water ingress from tail cap area Samantha Devapiriam",
+                        riskLevel: "Medium Risk"
+                    },
+                    {
+                        section: "Thermal",
+                        topic: "Device surface temperature exceeds safety limit",
+                        description: "Device surface temperature may exceed safety limits during operation, potentially causing discomfort or injury to users.",
+                        requirement: "Under normal use conditions, the device surface shall not exceed the safety limits. Thermal policy will ensure that when temperature measurement via the sensor is exceeding a certain value, the device will go into stand-by mode to allow the temperatures to drop before resuming normal operation.",
+                        controlPlanDetails: "Control Plan:\n* Simulations show that during normal operation, surface temperature is within the safety limits, even when device is utilizing maximum load.\n* Thermal policy will ensure that even during hot start, surface temperatures stay within safety limits (TS1), and the device goes to stand-by mode if necessary to maintain the safe limit.",
+                        riskLevel: "Medium Risk"
+                    },
+                    {
+                        section: "Thermal",
+                        topic: "Increased device power consumption and heating from electrical shorts",
+                        description: "Electrical shorts may cause increased power consumption and heating, potentially exceeding safety limits.",
+                        requirement: "If a short occurs on a board make sure it doesn't have a blank check to use power. That is, the power rails should have limits that correspond to what the components and peripherals need and should not source unlimited current to a fault.",
+                        controlPlanDetails: "Control Plan:\n* Use power supply components with a current limit, use current limit settings (e.g. resistors) that account for expected loads.\n* Monitor external devices (USB ports, USB-C charging, etc.) for current consumption.",
+                        riskLevel: "Medium Risk"
+                    },
+                    {
+                        section: "Thermal",
+                        topic: "In case of short or other hard faults with SoC, it may run hot and heat up the system",
+                        description: "SoC faults may cause excessive heating, potentially exceeding safety limits.",
+                        requirement: "Thermal policy to ensure that device overheating is prevented.",
+                        controlPlanDetails: "Control Plan:\n* Use thermal policy enforcement mechanisms that do not rely on the SOC. Place local thermal sensors that do not rely on SOC function\n* Shut off the device as part of the policy flow (enable pins disabled by default pull up/down and SOC must actively drive lines to enable peripherals).",
+                        riskLevel: "Medium Risk"
+                    },
+                    {
+                        section: "Thermal",
+                        topic: "Component Failure due to water intrusion or user plugin higher than rated PSU",
+                        description: "Water intrusion or use of higher than rated power supply may cause component failures and excessive heating.",
+                        requirement: "Thermal policy to ensure that device overheating is prevented. [EE/PD/Thermal to help come up with mitigations]",
+                        controlPlanDetails: "Control Plan:\n* Implement OCP/OVP to shutdown power in case of component short on PCBA",
+                        riskLevel: "Medium Risk"
+                    }
+                ]
+            };
+
+            // Common risks for all devices
+            const commonRisks = [];
+
+            // Return appropriate risks based on device type
+            if (deviceSpecificRisks[device]) {
+                return deviceSpecificRisks[device];
+            }
+            return commonRisks;
         }
 
         // Function to get risks for a specific component
@@ -1270,17 +1532,7 @@ function getComponentsForDevice(device, deviceType) {
                         riskLevel: "Low Risk"
                     }
                 ],
-                sharpEdges: [
-                    {
-                        section: "Product Design Structural",
-                        topic: "Sharp edge features",
-                        description: "Device has sharp edges and very small corner radius can make usage inconvenient. Sharp edges and corners may cause injury issue to user by skin contact and hamper the customer experience overall.",
-                      requirement: "These are the generic design guideline for corner radius [C] and top/ bottom edge radius [E]: If corner radius [C] is less than 2.5mm, the top/ bottom edge radius [E] should be at least 0.3 mm. If corner radius [C] is more than 2.5mm, the top/ bottom edge radius [E] should be at least 0.1 mm. Minimum radius for corner radius should be at least 0.3 mm.",
-                        controlPlanDetails: "Control Plan - PD:\n* [insert device name here] exterior geometry follows ID design with 1.2mm edge radius, button edge radius 0.15mm fulfill the requirement.\n\nControl Plan - Display:\n* There is 0.1mm chamfer on the display edge to avoid injury to user.",
-                        riskLevel: "Medium Risk"
-                    }
-                ],
-                chargingPort: [
+                usbCPort: [
                     {
                         section: "Electrical",
                         topic: "Liquid ingress on USB-C port",
@@ -1327,7 +1579,7 @@ function getComponentsForDevice(device, deviceType) {
                     },
                     {
                         section: "Battery",
-                        topic: "Battery swelling due to 4.48V Chemistry",
+                        topic: "Battery Swelling",
                         description: "Battery swelling is generated by gas generation due to the cell being at high voltages. The longer it is held at these higher voltages, more gas will be generated and the battery will swell quicker.",
                         requirement: "Implement pre-existing dynamic stress reduction algorithm\nSuccess Criteria:\n* Using the stress reduction algorithm, a derating strategy must be generated meeting the following BRD requirements:\n* Battery gaseous swelling must be contained to 200 dppm in 5 years\n* No derating of battery for TP95 of population in 3 years of use.\n* No derating for TP95 of population over 5 years that reflects more than 10% loss of capacity.",
                         controlPlanDetails: "Control Plan - Battery Integrity:\n* Characterize Paloma DOE and POR batteries for swelling using accelerated swell testing methodology\n* Develop a swell model for both to understand the swell behavior at different temperature and voltage conditions\n* Develop a derating strategy that meets BRD requirements and implement the derating strategy for Paloma aboard the dynamic stress reduction algorithm\n* This will likely take place during DVT due to long duration of testing\n* Validate Paloma's dynamic stress reduction algorithm with the firmware integrity team",
@@ -1415,24 +1667,6 @@ function getComponentsForDevice(device, deviceType) {
                         description: "The sleeve will have an edge and may hurt the user's ears. Concerns include potential skin irritation, abrasion resistance, tearing risk, brittleness, and aging causing crack and leaving debris in ear.",
                         requirement: "Make the sleeve very soft and uniform, no parting lines, two piece sleeves, and peel off issues. Spec of the step and gap for the parting line. Strength of material to be sufficient to prevent tearing. No aging in usage, resistance to disinfection agent, no brittleness or crack in normal usage condition. Sufficient bonding on stabilizer ring.",
                         controlPlanDetails: "Control Plan:\n* Hardness to be confirmed by ID team (40 shore A material).\n* Thickness: option1 0.3mm nominal to 0.4 on edge, option2 0.5mm all around.\n* Material: LSR material not wacker material.\n* Alcohol (IPA), earwax, sebum, sweat test.\n* USW welding process for stabilizer ring.\n* Silicone LSR bio-comp tests.\n* Design to prevent the shift/slide and not cover the mic.",
-                        riskLevel: "Medium Risk"
-                    }
-                ],
-                thermalCircuitConcerns: [
-                    {
-                        section: "EE & EE Integrity",
-                        topic: "Earbud soft or hard short on MLB or in-ear flex",
-                        description: "Soft short or hard short due to component single fault failure or liquid ingress led to the device overheating when the bud is either off the case or inside the case.",
-                        requirement: "The device surface shall not exceed the thermal TS2 safety limit under fault condition.",
-                        controlPlanDetails: "Control Plan:\n* Bud battery PCM overcurrent protection is 170mA max.\n* HW thermal cut off circuit on the MLB and in-ear flex which cuts off both the battery power and VCHRG power when temperature exceeds the limits.\n* PIC NTC thermal cut off - 60C+/-3C (Battery, MLB off charger).\n* MLB NTC thermal cut off - 52C +/-3C (MLB).\n* Inear Flex NTC thermal cut off - 55C +/- 3C (Prox sensor).\n* VA sensor will be covered by new CPLD design with fail safe temp sensing circuit.\n* The worst bud detection interval is 1min, if the bud has a short at the CPLD input or ESD diode, the case shall detect it within 1min under the worst case.\n* Add liquid proof coating to the unprotected PCB area (battery pads, battery PIC circuit, thermal cut off single fault circuit including the CPLD circuit).",
-                        riskLevel: "High Risk"
-                    },
-                    {
-                        section: "Thermal",
-                        topic: "Bud/Case over ergonomic and safety touch temperature limit during normal operation",
-                        description: "Device power consumption goes higher than thermal envelope due to additional feature increase, new DSP tuning, etc.",
-                        requirement: "The device surface shall not exceed the thermal TS1 safety limit under normal condition.",
-                        controlPlanDetails: "Control Plan:\n* Have SW QA checkpoint to maintain the maximum power within thermal budget.\n* Have both short-term and long-term virtual sensor and software policy. Device shuts down in extreme conditions.",
                         riskLevel: "Medium Risk"
                     }
                 ],
@@ -1548,35 +1782,9 @@ function getComponentsForDevice(device, deviceType) {
                         riskLevel: "Medium Risk"
                     }
                 ],
-                skinContact: [
+                chargingSystemWithPads: [
                     {
-                        section: "Skin Contact & Comfort",
-                        topic: "Mechanical Skin Irritation Risk",
-                        description: "Device's thermal probe protrudes 0.2mm from the bottom surface of the device. This could cause discomfort over time.",
-                        requirement: "Discomfort - to be validated via Beta testing.",
-                        controlPlanDetails: "Control Plan:\n1. Beta study using EVT capsules.",
-                        riskLevel: "Low Risk"
-                    },
-                    {
-                        section: "Skin Contact & Comfort",
-                        topic: "Skin Sensitization and Dermal Irritation",
-                        description: "Risk assessment of known skin sensitizers and dermal irritants.",
-                        requirement: "Levels of skin sensitizers and dermal irritants must be within acceptable limits.",
-                        controlPlanDetails: "Control Plan:\n* No actions needed. The EVT samples were within acceptable limits and deemed to be low risk for skin sensitization and dermal irritation.",
-                        riskLevel: "Low Risk"
-                    },
-                    {
-                        section: "Skin Contact & Comfort",
-                        topic: "Prop 65 and AFIRM RSL Compliance",
-                        description: "Risk assessment of chemicals per Prop 65 and AFIRM RSL requirements.",
-                        requirement: "Prop 65 chemicals below safe harbor values. AFIRM RSL-listed chemicals below safety limits.",
-                        controlPlanDetails: "Control Plan:\n* No actions needed. The EVT samples were within acceptable limits for Prop 65 and AFIRM RSL.",
-                        riskLevel: "Low Risk"
-                    }
-                ],
-                chargingSystem: [
-                    {
-                        section: "Charging System",
+                        section: "Charging System with Pads and Pogo Pins",
                         topic: "Reverse polarity protection in the capsule",
                         description: "Plugging a device in reverse/backward orientation to the charger may damage the internal circuitry of the device.",
                         requirement: "Device shall have circuitry to protect it when plugged in reverse to the charger.",
@@ -1584,7 +1792,7 @@ function getComponentsForDevice(device, deviceType) {
                         riskLevel: "Medium Risk"
                     },
                     {
-                        section: "Charging System",
+                        section: "Charging System with Pads and Pogo Pins",
                         topic: "Over current or over voltage surge from wall to device during charging",
                         description: "A surge of over current or over voltage from wall to device can result in a single fault with a resistive short at PMIC during charging.",
                         requirement: "To meet TS2 limit of 70C for plastic, and 66C for glass, 61C for metal while on the charger.",
@@ -1592,7 +1800,7 @@ function getComponentsForDevice(device, deviceType) {
                         riskLevel: "Medium Risk"
                     },
                     {
-                        section: "Charging System",
+                        section: "Charging System with Pads and Pogo Pins",
                         topic: "Corrosion at the pogo pins create impedance between Vbus & GND and generate heat",
                         description: "Liquid presents on the device pads cause corrosion. The pogo pins are severely corroded and corrosion creates impedance between Vbus & GND and generate heat.",
                         requirement: "Device should not get corroded during normal usage e.g. being exposed to sweat, salt water, washing solution, placed on charger while wet, etc.",
@@ -1600,7 +1808,7 @@ function getComponentsForDevice(device, deviceType) {
                         riskLevel: "Medium Risk"
                     },
                     {
-                        section: "Charging System",
+                        section: "Charging System with Pads and Pogo Pins",
                         topic: "The pogo pins or device pads are severely corroded that results in loosing coating and cause skin sensitivity",
                         description: "Liquid presents on the device pads cause corrosion. The pogo pins or device pads are severely corroded so that the charger function is lost and loosing coating can cause skin sensitivity.",
                         requirement: "Prevent corrosion. Material selection should be in compliance with ASTM F2999 (Adult Jewelry - Heavy Metals) & device should pass Leach Test at 3rd party.",
@@ -1608,57 +1816,11 @@ function getComponentsForDevice(device, deviceType) {
                         riskLevel: "Medium Risk"
                     },
                     {
-                        section: "Charging System",
+                        section: "Charging System with Pads and Pogo Pins",
                         topic: "Short on charger pins",
                         description: "Short on energized charger pin. If no protection in place, device's charger exposed pogo pins are capable of providing >15W of power during single fault or short condition on charging contacts. It can potentially generate heat when foreign contaminates caused a power to ground short at connector interfaces.",
                         requirement: "Reduce the risk by controlling available power to lower level during the fault.",
                         controlPlanDetails: "Control Plan:\n* Limit available power (eFuse or PTC) on exposed pins\n* ID to ensure this will not happen by design\n* Using a smart charger to detect faulty connection\n* Test to simulate: short and resistive short test on charger pins",
-                        riskLevel: "Medium Risk"
-                    }
-                ],
-                electrical: [
-                    {
-                        section: "Electrical",
-                        topic: "Electrical single fault failure while device on wrist",
-                        description: "Single fault leading to thermal runaway when worn on the wrist, on internal components such as SoC/BTC/Haptic Driver/Display Driver.",
-                        requirement: "To meet TS2 limit of 58C on capsule.",
-                        controlPlanDetails: "Control Plan:\n* For single fault cases where MCU is still functional and firmware is responsive, the firmware will sample the board temperature sensor every 30s. In case of an over temperature event, firmware shall put the device into thermal mode.\n* For single fault cases where MCU is not functional and firmware is inactive:\n  * Current battery spec sets OTP at 50C +/- 3C and OCP max at 169mA to mitigate the power dissipation inside the capsule.\n  * Validated surface temperature within TS2 of 58C for worst single fault scenarios (battery OCP trips for fault power of 642mW at HRM AFE)",
-                        riskLevel: "High Risk"
-                    },
-                    {
-                        section: "Electrical",
-                        topic: "Electrical single fault failure while device on the charger",
-                        description: "Single fault leading to thermal runaway during charging, on internal components such as SoC/BTC/Haptic Driver/Display Driver when on the charger.",
-                        requirement: "To meet TS2 limit of 70C (less than 1min) on plastic, and 66C on glass, 61C for metal.",
-                        controlPlanDetails: "Control Plan:\n* For single fault cases where MCU is functional and firmware is responsive, firmware will put the device in Safe Mode, disabling charging and reducing VIN_ILIM to 98mA. Firmware will also configure the PMIC to disconnect battery from the ASYS power path.\n* For single fault cases where MCU is not functional and firmware is not responsive:\n  * PMIC watchdog will expire in 32s and device will enter Safe Mode automatically. This disables charging and reduces VIN_ILIM to 98mA.\n  * LDO1/LDO2/SW1/SW2 enters the mode 0 setting (the default factory setting for the initial power up)\n  * Battery pack has an internal thermal monitoring circuit which will cut power to the device if the battery pack temperature exceeds 50C +/- 3C.",
-                        riskLevel: "High Risk"
-                    }
-                ],
-                thermal: [
-                    {
-                        section: "Thermal",
-                        topic: "Charging the battery without battery pack thermal monitoring and enforcing JEITA profile poses a safety risk",
-                        description: "Charging without proper thermal monitoring can lead to safety risks.",
-                        requirement: "Battery shall be charged only when the firmware is active and battery temperature monitoring is enabled in the PMIC.",
-                        controlPlanDetails: "Control Plan:\n* Device boots up in Safe Mode (Mode 0) by default and charging is disabled. After device boot up is complete, firmware enables battery thermal monitoring and enables charging.\n* If a situation arises where firmware is non responsive, PMIC watchdog will expire in 32 seconds, switching the device back to Safe Mode (Mode 0), disabling charging.",
-                        riskLevel: "Medium Risk"
-                    },
-                    {
-                        section: "Thermal",
-                        topic: "SW thermal management policy for over temperature case and temperature sensor non-functional",
-                        description: "If either of the temperature sensors fails, an error handling mechanism will be triggered by SW thermal policy.",
-                        requirement: "To meet TS2 limit of 58C on capsule when worn on wrist; 70C for plastic, 66C for glass and 61C for metal while charging.",
-                        controlPlanDetails: "Control Plan:\n* SW thermal policy polls the two onboard temperature sensors every 30s, if either of the sensors fail for 3 consecutive times, device will reboot\n* Thermal policy has been enabled for Beta users. Thermal policy entry and exit criteria validated in EVT.",
-                        riskLevel: "Medium Risk"
-                    }
-                ],
-                complianceEnvironmentalPolicies: [
-                    {
-                        section: "Compliance",
-                        topic: "Safety Compliance Certification",
-                        description: "Compliance to the applicable safety standard UL/CSA/IEC 60950 Ed.2 + Am.1 + Am.2 and UL/CSA/IEC 62368-1, Ed.2 with National Deviations covering the following list of countries - US, CA, EU(DE/UK), JP.",
-                        requirement: "Current design shall comply to a certification agency compliance assessment, in accordance to the applicable standards listed above.",
-                        controlPlanDetails: "Control Plan:\n1. HVT Phase - Construction Review with limited testing to standards listed above.\n   * Deliverable - Construction review letter report with test data report\n2. EVT Phase - Construction review + complete testing\n   * Deliverable - Test reports, CB Certificate",
                         riskLevel: "Medium Risk"
                     }
                 ]
@@ -1677,7 +1839,7 @@ function getComponentsForDevice(device, deviceType) {
                     },
                     {
                         section: "Battery",
-                        topic: "Battery swell due to 4.48V chemistry",
+                        topic: "Battery Swelling",
                         description: "Battery swelling is generated by gas generation due to the cell being at high voltages. The longer it is held at these higher voltages, more gas will be generated and the battery will swell quicker.",
                         requirement: "Implement pre-existing dynamic stress reduction algorithm\nSuccess Criteria:\n* Using the stress reduction algorithm, a derating strategy must be generated meeting the following BRD requirements:\n* Battery gaseous swelling must be contained to 200 dppm in 5 years\n* No derating of battery for TP95 of population in 3 years of use.\n* No derating for TP95 of population over 5 years that reflects more than 10% loss of capacity.",
                         controlPlanDetails: "* Characterize [insert device name here] DOE and POR batteries for swelling using accelerated swell testing methodology\n* Develop a swell model for both to understand the swell behavior at different temperature and voltage conditions\n* Develop a derating strategy that meets BRD requirements and implement the derating strategy for [insert device name here] aboard the dynamic stress reduction algorithm\n* This will likely take place during DVT due to long duration of testing\n* Validate [insert device name here]'s dynamic stress reduction algorithm with the firmware integrity team",
@@ -1743,14 +1905,6 @@ function getComponentsForDevice(device, deviceType) {
                     },
                     {
                         section: "PD/Structural",
-                        topic: "Battery shifts after tumble/drop",
-                        description: "Battery de-laminates or shifts after tumble/drop.",
-                        requirement: "No significant battery deformation or shift after tumble/drop.",
-                        controlPlanDetails: "* Optimize PSA material, XY footprint and assembly process to prevent significant battery shift after tumble/drop.\n* Add 05-046054 on PD drawing for PSA liner spec per recent lessons learned on Sangria to maintain silicone free PSA surface\n* Inspection of battery before and after reliability tests in HVT to validate.",
-                        riskLevel: "Medium Risk"
-                    },
-                    {
-                        section: "PD/Structural",
                         topic: "Internal damage to battery due to excessive lamination pressure during assembly",
                         description: "Battery separator or internal structure may be damaged by excessive lamination pressure during PSA activation.",
                         requirement: "PSA needs to meet minimum psi for activation without exceeding maximum psi defined by battery supplier.",
@@ -1782,7 +1936,7 @@ function getComponentsForDevice(device, deviceType) {
                         riskLevel: "Low Risk"
                     }
                 ],
-                chargingPort: [
+                usbCPort: [
                     {
                         section: "EE",
                         topic: "Liquid ingress into USB port during charging, causing burnt connector",
@@ -1823,54 +1977,10 @@ function getComponentsForDevice(device, deviceType) {
                         controlPlanDetails: "* Add extra pins between power and ground pins during pin assignment.\n* Add extra pins between high voltage and low voltage pins during pin assignment.\n* Implement liquid ingress barrier in USB connector port.",
                         riskLevel: "Medium Risk"
                     }
-                ],
-                thermalCircuitConcerns: [
-                    {
-                        section: "Thermal",
-                        topic: "Surface temperature exceeding ergo/safety limit",
-                        description: "(1) Unit exposed to excessive heat during charging like direct sunlight. (2) Unit covered with blanket or other material preventing air circulation.",
-                        requirement: "Incorporate thermal policy to shutdown the device when virtual sensor temperature/component temperature exceeds threshold.",
-                        controlPlanDetails: "* Implement thermal policy for managing surface temperature on [insert device name here] and mitigate risks.",
-                        riskLevel: "Medium Risk"
-                    },
-                    {
-                        section: "Thermal",
-                        topic: "Increased device power consumption and heating from electrical shorts",
-                        description: "A short, either from a failing component or from contamination, can lead to device power consumption and heating. This could be an internal short in a component, bridging due to solder creep/tin whisker, wear on a cable assembly, impacts from vibration/drop/tumble, or a conductive contaminant (e.g. gatorade) inside a device.",
-                        requirement: "If a short occurs on a board, the power rails should have limits that correspond to what the components and peripherals need and should not source unlimited current to a fault.",
-                        controlPlanDetails: "* The current will be limited by the OCP in place.\n* Implementation of Single Fault Protection Circuit (SFPC) to shut off power if abnormal temperatures are detected to prevent the device from reaching harmful temperatures.",
-                        riskLevel: "Medium Risk"
-                    },
-                    {
-                        section: "Thermal",
-                        topic: "In case of short or other hard faults with SoC, it may run hot and heat up the system",
-                        description: "If there is a hard fault (SOC cannot restart by watchdog) then the SOC can run warm and not shut down. Even if the SOC is not hung a fault on certain rails (e.g. main system always-on voltage) may be outside the control of the SOC. This could lead to thermal policy not being correctly enforced in a failure state.",
-                        requirement: "Thermal policy to ensure that device overheating is prevented.",
-                        controlPlanDetails: "* Implementation of Single Fault Protection Circuit (SFPC) to shut off power if abnormal temperatures are detected to prevent the device from reaching harmful temperatures.",
-                        riskLevel: "Medium Risk"
-                    }
-                ],
-                complianceEnvironmentalPolicies: [
-                    {
-                        section: "HW Compliance",
-                        topic: "Product Safety Compliance & Certification Requirements",
-                        description: "Compliance to the applicable safety standard IEC60950 Ed.2 + Am.1 + Am.2, IEC62368-1 Ed. 2, and IEC62368-1 Ed. 3 IEC62668-1 Ed. 4 with National Deviations covering all the POR regions.",
-                        requirement: "Design shall comply to a certification agency compliance assessment, in accordance to the applicable standards listed above.",
-                        controlPlanDetails: "* HVT Phase - Construction Review + full safety pre-compliance testing to standards listed above.\n  * Deliverable – Construction review letter, completed test data sheets.\n* EVT Phase – Construction Review (delta vs HVT) + full safety compliance testing to standards listed above.\n  * Deliverable – CB Test Reports & Certificates per noted standards above.\n* DVT Phase - Construction Review (delta vs EVT) + regression safety compliance testing to standards listed above.\n  * Deliverable - CB Test Reports & Certifications per noted standards above",
-                        riskLevel: "Medium Risk"
-                    },
-                    {
-                        section: "Environmental Compliance",
-                        topic: "Environmental Compliance Requirements",
-                        description: "All the materials for the device must meet the EC requirements by complying with the respective regional, national or local environmental laws and regulations where they are placed on the market for sale.",
-                        requirement: "The details for these requirements are described in the Amazon Devices and Services Restricted and Reportable Substance List (Amazon RSL), PN: 05-003018 and Amazon Supplier's Declaration of Compliance (SDoC), PN: 05- 030181.",
-                        controlPlanDetails: "* Ask CM to complete the compliance documents collection before PVT RR. EC team will provide the risk level for the DVTRR and PVTRR. The compliance documents may include:\n  * Completed and signed product-level Amazon Supplier Declaration of Compliance (SDoC) form 05-030181\n  * Full Material Disclosures (\"FMD\") should be provided for all external, user accessible parts from each part supplier, if multiple sourced, for PROP 65 (California substance exposure regulation) compliance verification. Amazon recommends the use of Amazon FMD template 05-038004.\n  * Halogen Test Report for all external, user accessible parts from each part supplier, if multiple sourced.\n  * Product-level Bill of Materials (\"BOM\") 05-034983\n  * Other 3rd Party Lab test reports base on the BOM o Material Safety Datasheets (MSDS), if applicable.",
-                        riskLevel: "Medium Risk"
-                    }
                 ]
             };
 
-            // Define EFD component risks
+            // Define component risks for EFD devices
             const efdComponentRisks = {
                 rockerSwitch: [
                     {
@@ -1898,48 +2008,6 @@ function getComponentsForDevice(device, deviceType) {
                         riskLevel: "Low Risk"
                     }
                 ],
-                muteButton: [
-                    {
-                        section: "Product Design Structural",
-                        topic: "Liquid ingression into mute button area",
-                        description: "Liquid may enter through the mute button area, leading to dysfunctional mute button or privacy circuit failure.",
-                        requirement: "Device should maintain functionality after exposure to normal amounts of liquid that may contact the mute button.",
-                        controlPlanDetails: "Control Plan - PD:\n* Pending decision of using Piezo DOE to seal the gap between",
-                        riskLevel: "Medium Risk"
-                    },
-                    {
-                        section: "Electrical",
-                        topic: "ESD risk through mute button",
-                        description: "Electrostatic discharge may occur through the mute button, potentially affecting the mute circuit and mute LED (privacy circuit).",
-                        requirement: "Device must maintain functionality after ESD events through the mute button.",
-                        controlPlanDetails: "Control Plan - ESD:\n* Cable harness is required.\n* Pending ESD assessment (OK2FAB item)",
-                        riskLevel: "Medium Risk"
-                    },
-                    {
-                        section: "Product Design Structural",
-                        topic: "Mute LED indicator and privacy control",
-                        description: "Failure of mute LED indicator may lead to privacy concerns if users are unaware of device status.",
-                        requirement: "Mute LED indicator must clearly indicate privacy status and be reliable.",
-                        controlPlanDetails: "",
-                        riskLevel: "Medium Risk"
-                    },
-                    {
-                        section: "Product Design Structural",
-                        topic: "Mute icon edge radius",
-                        description: "Sharp edges on mute icon may cause discomfort or minor injury to users.",
-                        requirement: "All edges must meet safety requirements for edge radius.",
-                        controlPlanDetails: "Control Plan - PD:\n* Pending dimension info and design snapshot",
-                        riskLevel: "Low Risk"
-                    },
-                    {
-                        section: "Reliability",
-                        topic: "Mute privacy deficiency post drop",
-                        description: "Device drop may cause mute button or privacy circuit to fail, leading to privacy concerns.",
-                        requirement: "Mute functionality should remain operational after normal drop events.",
-                        controlPlanDetails: "Control Plan - PD:\n* Drop analysis and EVT REL drop test did not show mic privacy circuit damage so far - Medium to low risk.",
-                        riskLevel: "Medium Risk"
-                    }
-                ],
                 lubricant: [
                     {
                         section: "Materials",
@@ -1947,42 +2015,6 @@ function getComponentsForDevice(device, deviceType) {
                         description: "Lubricant materials used in the device may leak out, causing exposure to users or factory workers.",
                         requirement: "Lubricant materials must be contained and not leak during normal use or manufacturing.",
                         controlPlanDetails: "Control Plan - PD:\n* Pending lubricant selection",
-                        riskLevel: "Medium Risk"
-                    }
-                ],
-                moldedParts: [
-                    {
-                        section: "Product Design Structural",
-                        topic: "Sharp edge/corner on molded components",
-                        description: "Molded components may have sharp edges or corners that could cause discomfort or injury to users.",
-                        requirement: "All molded components must meet safety requirements for edge and corner radius.",
-                        controlPlanDetails: "",
-                        riskLevel: "Medium Risk"
-                    }
-                ],
-                deviceIngress: [
-                    {
-                        section: "Product Design Structural",
-                        topic: "Liquid ingress into the device through speaker port",
-                        description: "Liquid may enter the device through the speaker port or other entrances, potentially causing electrical shorts or other failures.",
-                        requirement: "Device should be designed to minimize liquid ingress through speaker ports and other openings.",
-                        controlPlanDetails: "",
-                        riskLevel: "Medium Risk"
-                    },
-                    {
-                        section: "Product Design Structural",
-                        topic: "Spill risk on the power adapter area",
-                        description: "Liquid spills near the power adapter connection may cause electrical shorts or other failures.",
-                        requirement: "Power adapter connection should be designed to minimize risk from liquid spills.",
-                        controlPlanDetails: "",
-                        riskLevel: "Medium Risk"
-                    },
-                    {
-                        section: "Product Design Structural",
-                        topic: "Liquid ingress through I/O board and bottom of the housing",
-                        description: "Liquid may pool at the bottom of the device and enter through the I/O board or housing seams.",
-                        requirement: "Device should be designed to prevent liquid pooling and ingress through the bottom of the housing.",
-                        controlPlanDetails: "Control Plan - PD:\n* Woofer area to be sealed? Samantha Devapiriam\n* Check any path allowing water ingress from tail cap area Samantha Devapiriam",
                         riskLevel: "Medium Risk"
                     }
                 ],
@@ -2096,40 +2128,6 @@ function getComponentsForDevice(device, deviceType) {
                         riskLevel: "High Risk"
                     }
                 ],
-                thermalManagement: [
-                    {
-                        section: "Thermal",
-                        topic: "Device surface temperature exceeds safety limit",
-                        description: "Device surface temperature may exceed safety limits during operation, potentially causing discomfort or injury to users.",
-                        requirement: "Under normal use conditions, the device surface shall not exceed the safety limits. Thermal policy will ensure that when temperature measurement via the sensor is exceeding a certain value, the device will go into stand-by mode to allow the temperatures to drop before resuming normal operation.",
-                        controlPlanDetails: "Control Plan:\n* Simulations show that during normal operation, surface temperature is within the safety limits, even when device is utilizing maximum load.\n* Thermal policy will ensure that even during hot start, surface temperatures stay within safety limits (TS1), and the device goes to stand-by mode if necessary to maintain the safe limit.",
-                        riskLevel: "Medium Risk"
-                    },
-                    {
-                        section: "Thermal",
-                        topic: "Increased device power consumption and heating from electrical shorts",
-                        description: "Electrical shorts may cause increased power consumption and heating, potentially exceeding safety limits.",
-                        requirement: "If a short occurs on a board make sure it doesn't have a blank check to use power. That is, the power rails should have limits that correspond to what the components and peripherals need and should not source unlimited current to a fault.",
-                        controlPlanDetails: "Control Plan:\n* Use power supply components with a current limit, use current limit settings (e.g. resistors) that account for expected loads.\n* Monitor external devices (USB ports, USB-C charging, etc.) for current consumption.",
-                        riskLevel: "Medium Risk"
-                    },
-                    {
-                        section: "Thermal",
-                        topic: "In case of short or other hard faults with SoC, it may run hot and heat up the system",
-                        description: "SoC faults may cause excessive heating, potentially exceeding safety limits.",
-                        requirement: "Thermal policy to ensure that device overheating is prevented.",
-                        controlPlanDetails: "Control Plan:\n* Use thermal policy enforcement mechanisms that do not rely on the SOC. Place local thermal sensors that do not rely on SOC function\n* Shut off the device as part of the policy flow (enable pins disabled by default pull up/down and SOC must actively drive lines to enable peripherals).",
-                        riskLevel: "Medium Risk"
-                    },
-                    {
-                        section: "Thermal",
-                        topic: "Component Failure due to water intrusion or user plugin higher than rated PSU",
-                        description: "Water intrusion or use of higher than rated power supply may cause component failures and excessive heating.",
-                        requirement: "Thermal policy to ensure that device overheating is prevented. [EE/PD/Thermal to help come up with mitigations]",
-                        controlPlanDetails: "Control Plan:\n* Implement OCP/OVP to shutdown power in case of component short on PCBA",
-                        riskLevel: "Medium Risk"
-                    }
-                ],
                 compliance: [
                     {
                         section: "HW Compliance",
@@ -2190,13 +2188,7 @@ function getComponentsForDevice(device, deviceType) {
                         topic: "Display-related safety risk"
                     }
                 ],
-                sharpEdges: [
-                    {
-                        section: "Product Design",
-                        topic: "Sharp edge safety risk"
-                    }
-                ],
-                chargingPort: [
+                usbCPort: [
                     {
                         section: "Electrical",
                         topic: "USB port safety risk"
@@ -2267,7 +2259,7 @@ function getComponentsForDevice(device, deviceType) {
                 <!DOCTYPE html>
                 <html>
                 <head>
-                    <title>${deviceName} DFS Document</title>
+                    <title>${projectName} ${deviceName} DFS Document</title>
                     <style>
                         body { font-family: Arial, sans-serif; line-height: 1.6; }
                         table { border-collapse: collapse; width: 100%; margin: 15px 0; }
@@ -2296,7 +2288,7 @@ function getComponentsForDevice(device, deviceType) {
 
             const a = document.createElement('a');
             a.href = url;
-            a.download = `${deviceName}_DFS_document.html`;
+            a.download = `${projectName}_${deviceName}_DFS_document.html`;
             document.body.appendChild(a);
             a.click();
             document.body.removeChild(a);
@@ -2358,222 +2350,6 @@ function getComponentsForDevice(device, deviceType) {
                 console.error('Failed to copy: ', err);
             }
         }
-
-        // Function to generate DFS document with complete template
-function generateDFSDocument(device, deviceType, components, nudEntries = []) {
-    const deviceName = getDeviceDisplayName(device, deviceType);
-    const today = new Date().toLocaleDateString();
-
-    // Get all risks for the device
-    const allRisks = getAllRisks(device, deviceType, components, nudEntries);
-
-    // Start building the document content
-    let content = `
-    <h2>Design for Safety</h2>
-
-    <h3>Executive summary</h3>
-    <p>Add summary here.</p>
-
-    <h3>1. Product Introduction</h3>
-    <p>Add summary here</p>
-
-    <h3>2. Product Benchmarking Table (To be updated)</h3>
-    <p>Capsule<br>Charger</p>
-
-    <h3>3. Product Features and Specs</h3>
-    <h4>3.1 Capsule: Description</h4>
-    <table class="specs-table">
-        <tr>
-            <th>ITEM</th>
-            <th></th>
-            <th></th>
-            <th></th>
-            <th></th>
-        </tr>
-        <tr><td>DISPLAY</td><td></td><td></td><td></td><td></td></tr>
-        <tr><td>HAPTICS</td><td></td><td></td><td></td><td></td></tr>
-        <tr><td>MICROPHONES</td><td></td><td></td><td></td><td></td></tr>
-        <tr><td>CAPSULE SIZE</td><td></td><td></td><td></td><td></td></tr>
-        <tr><td>CAPSULE WEIGHT</td><td></td><td></td><td></td><td></td></tr>
-        <tr><td>CAPSULE MATERIAL</td><td></td><td></td><td></td><td></td></tr>
-        <tr><td>SENSOR</td><td></td><td></td><td></td><td></td></tr>
-        <tr><td>BATTERY CAPACITY, VOLTAGE</td><td></td><td></td><td></td><td></td></tr>
-        <tr><td>BAND ATTACH MECHANISM</td><td></td><td></td><td></td><td></td></tr>
-        <tr><td>BAND CLOSURE</td><td></td><td></td><td></td><td></td></tr>
-        <tr><td>BAND MATERIAL</td><td></td><td></td><td></td><td></td></tr>
-        <tr><td>CHARGER TYPE</td><td></td><td></td><td></td><td></td></tr>
-        <tr><td>Water Resistance Requirements</td><td></td><td></td><td></td><td></td></tr>
-    </table>
-
-    <h4>3.2 Charger:</h4>
-    <table class="specs-table">
-        <tr>
-            <th>ITEM/ CATEGORY</th>
-            <th></th>
-            <th></th>
-            <th></th>
-            <th></th>
-            <th></th>
-        </tr>
-        <tr><td>CHARGER TYPE</td><td></td><td></td><td></td><td></td><td></td></tr>
-        <tr><td>PRODUCT DIMENSIONS/ WEIGHT</td><td></td><td></td><td></td><td></td><td></td></tr>
-        <tr><td>Cable Length</td><td></td><td></td><td></td><td></td><td></td></tr>
-        <tr><td>Weight</td><td></td><td></td><td></td><td></td><td></td></tr>
-        <tr><td>CHARGER SPECIFICATION</td><td></td><td></td><td></td><td></td><td></td></tr>
-        <tr><td>EE SPECIFICATION/ RATING - charging speed?</td><td></td><td></td><td></td><td></td><td></td></tr>
-        <tr><td>Connector type</td><td></td><td></td><td></td><td></td><td></td></tr>
-        <tr><td>Pogo pin type</td><td></td><td></td><td></td><td></td><td></td></tr>
-        <tr><td>HOUSING MATERIAL</td><td></td><td></td><td></td><td></td><td></td></tr>
-        <tr><td>ACCESSORIES SPECIFICATION</td><td></td><td></td><td></td><td></td><td></td></tr>
-    </table>
-
-    <h3>Lessons Learned</h3>
-    <h4>Safety Lessons Learned</h4>
-    <p>PI Safety Lessons JIRA</p>
-    <p>Wearable lesson learned:</p>
-    <ul>
-        <li>Silkscreen Replacement with Exposed Copper caused grounding on MLB PCB in DVT [ relevance score: 1.0 ]</li>
-        <li>Lessons Learned from Metal Contact Corrosion in Wearable Devices [ relevance score: 1.0 ]</li>
-        <li>Bruce Teardown Observations [ relevance score: 1.0 ]</li>
-        <li>Bruce Capsule bridge (band attach area) cracking during Insertion / Removal Life cycle. [ relevance score: 1.0 ]</li>
-        <li>Dylan grounding issue (resistance test) [ relevance score: 1.0 ]</li>
-        <li>Dylan LL [ relevance score: 1.0 ]</li>
-        <li>Avoid Electrolytic Corrosion in Connectors and Contacts [ relevance score: 1.0 ]</li>
-        <li>Grounding Guidelines for wearables [ relevance score: 1.0 ]</li>
-        <li>Lessons Learned from Metal Contact Corrosion in Wearable Devices [ relevance score: 1.0 ]</li>
-    </ul>
-    <p>AME team/Factory team LL: Bruce AME Lessons Learned</p>
-    <p>REL team LL:</p>
-    <p>Dylan lesson learned Dylan_LL_V7.pdf</p>
-    <p>Wearable corrosion lesson learned</p>
-
-    <h3>Product PD Review</h3>
-    <p>Design architecture:</p>
-    <p>PD related process issue</p>
-
-    <h3>Product EE Review</h3>
-    <p>Device power architecture</p>
-    <p>EE related process issue</p>
-
-    <h3>Safety Risk Summary Table</h3>
-    <table>
-        <tr>
-            <td><strong>Product Section</strong></td>
-            <td><strong>ID</strong></td>
-            <td><strong>Risk Topic</strong></td>
-            <td><strong>Justification</strong></td>
-            <td><strong>Functional Team</strong></td>
-            <td><strong>Assignee</strong></td>
-            <td><strong>Risk Level</strong></td>
-            <td><strong>Design Milestone</strong></td>
-            <td><strong>Close-By Milestone</strong></td>
-            <td><strong>Control Plan/Validation Plan</strong></td>
-        </tr>`;
-
-    // Add mandatory task row
-    content += `<tr class="task-row">
-        <td>Task</td>
-        <td>0.1</td>
-        <td>DFS doc review and legal sign-off</td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-    </tr>`;
-
-    // Group risks by section for hierarchical numbering
-    const risksBySection = {};
-    allRisks.forEach(risk => {
-        if (!risksBySection[risk.section]) {
-            risksBySection[risk.section] = [];
-        }
-        risksBySection[risk.section].push(risk);
-    });
-
-    // Add each risk to the table with hierarchical numbering
-    let sectionCounter = 1;
-
-    for (const section in risksBySection) {
-        let itemCounter = 1;
-
-        risksBySection[section].forEach(risk => {
-            // Generate hierarchical ID (e.g., 1.1, 1.2, 2.1, etc.)
-            const hierarchicalId = `${sectionCounter}.${itemCounter}`;
-
-            content += `<tr>
-                <td>${risk.section}</td>
-                <td>${hierarchicalId}</td>
-                <td>${risk.topic}</td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td>${risk.riskLevel || ''}</td>
-                <td></td>
-                <td>EVT</td>
-                <td>${risk.controlPlanDetails || ''}</td>
-            </tr>`;
-
-            itemCounter++;
-        });
-
-        sectionCounter++;
-    }
-
-    // If no risks were added, add a placeholder row
-    if (Object.keys(risksBySection).length === 0) {
-        content += `<tr>
-            <td colspan="10" style="text-align: center;">No specific risks defined for this device type yet.</td>
-        </tr>`;
-    }
-
-    content += `</table>`;
-
-    // Add PD & Structural Safety Risk Details section
-    content += `<h3>PD & Structural Safety Risk Details</h3>`;
-
-    // Add each section with its risks
-    for (const section in risksBySection) {
-        content += `<h4>${section}</h4>`;
-
-        // Add each risk topic with description, requirement, and control plan
-        risksBySection[section].forEach(risk => {
-            content += `
-            <div class="risk-details">
-                <p><strong>Risk Topic:</strong> ${risk.topic}</p>`;
-
-            // Only add description if it's not empty
-            if (risk.description) {
-                content += `
-                <p><strong>Description:</strong></p>
-                <ul>
-                    <li>${risk.description}</li>
-                </ul>`;
-            }
-
-            content += `
-                <p><strong>Requirement:</strong></p>
-                <ul>
-                    <li>${risk.requirement || ''}</li>
-                </ul>
-
-                <p><strong>Control Plan:</strong></p>
-                <ul>
-                    ${formatControlPlan(risk.controlPlanDetails || '')}
-                </ul>
-
-                <p><strong>Risk Estimation:</strong> ${risk.riskLevel || ''}</p>
-            </div>`;
-        });
-    }
-
-    // Add Appendix
-    content += `<h3>Appendix:</h3>`;
-
-    return content;
-}
     </script>
 </body>
 </html>
